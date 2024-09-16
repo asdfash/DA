@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node --env-file=.env index.js",
+    "test": "node --env-file=.env test.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "argon2": "^0.41.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.19.2",
@@ -17,8 +19,7 @@
     "helmet": "^7.1.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^2.18.1",
-    "pug": "^3.0.3",
+    "mysql2": "^3.11.2",
     "xss-clean": "^0.1.4"
   }
 }
