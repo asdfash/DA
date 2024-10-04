@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { route, userRoute, adminRoute } from "./routes.js";
+import route from "./routes.js";
 
 const app = express();
 const port = process.env.BACKENDPORT || 3000;
@@ -18,8 +18,6 @@ app.use(express.json()); //Setup express to take in json
 app.use(cookieParser()); //Setup cookie parser
 
 //routing
-app.use("/user", userRoute);
-app.use("/admin", adminRoute);
 app.use(route);
 
 /** App listening on port */

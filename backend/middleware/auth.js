@@ -4,7 +4,7 @@ import { db } from "../mysql.js";
 
 export const Login = async (req, res, next) => {
   const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username]);
-  if (login && bcrypt.compareSync(req.body.password, login.password) && login.active) {
+  if (login && bcrypt.compareSync(req.body.password, login.password) && login.isActive) {
     res.cookie(
       "token",
       jwt.sign(
@@ -36,7 +36,7 @@ export const CheckLogin = async (req, res, next) => {
   try {
     const token = jwt.verify(req.cookies.token, process.env.TOKENSECRET);
     req.username = token.username;
-    const [[{ count }]] = await db.execute("select count(*) as count from accounts where username = ? and active = 1", [req.username]);
+    const [[{ count }]] = await db.execute("select count(*) as count from accounts where username = ? and isActive = 1", [req.username]);
     if (count < 1 || token.ip != req.ip || token.browser != req.headers["user-agent"]) {
       throw "err";
     }

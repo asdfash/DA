@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 
 const UMS = ({ notify }) => {
-  const headers = ["username", "password", "email", "group", "active", "create/edit"];
+  const headers = ["username", "password", "email", "group", "isActive", "create/edit"];
   const [updateBool, updateInfo] = useState(false);
   const [newGroup, setNewGroup] = useState("");
   const [groupError, setGroupError] = useState("");
@@ -15,7 +15,7 @@ const UMS = ({ notify }) => {
     password: "",
     email: "",
     groups: [],
-    active: true,
+    isActive: true,
     error: "",
   });
   const [users, setUsers] = useState([]);
@@ -31,7 +31,7 @@ const UMS = ({ notify }) => {
         setGroups(res.data);
       })
       .catch(err => {
-        switch (err.status) {
+        switch (err.response.status) {
           case 401:
             navigate("/login");
             break;
@@ -45,7 +45,7 @@ const UMS = ({ notify }) => {
       .get("/viewUsers")
       .then(res => setUsers(res.data))
       .catch(err => {
-        switch (err.status) {
+        switch (err.response.status) {
           case 401:
             navigate("/login");
             break;
@@ -69,7 +69,7 @@ const UMS = ({ notify }) => {
         updateInfo(!updateBool);
       })
       .catch(err => {
-        switch (err.status) {
+        switch (err.response.status) {
           case 401:
             navigate("/login");
             break;
@@ -92,7 +92,7 @@ const UMS = ({ notify }) => {
         username: createUser.username,
         password: createUser.password,
         email: createUser.email,
-        active: createUser.active,
+        isActive: createUser.isActive,
         groups: createUser.groups,
       })
       .then(() => {
@@ -101,13 +101,13 @@ const UMS = ({ notify }) => {
           password: "",
           email: "",
           groups: [],
-          active: true,
+          isActive: true,
         });
         notify("user created");
         updateInfo(!updateBool);
       })
       .catch(err => {
-        switch (err.status) {
+        switch (err.response.status) {
           case 401:
             navigate("/login");
             break;
@@ -133,7 +133,7 @@ const UMS = ({ notify }) => {
         username: editUser.username,
         password: editUser.password,
         email: editUser.email,
-        active: editUser.active,
+        isActive: editUser.isActive,
         groups: editUser.groups,
       })
       .then(() => {
@@ -142,7 +142,7 @@ const UMS = ({ notify }) => {
         updateInfo(!updateBool);
       })
       .catch(err => {
-        switch (err.status) {
+        switch (err.response.status) {
           case 401:
             navigate("/login");
             break;
@@ -203,7 +203,7 @@ const UMS = ({ notify }) => {
               />
             </td>
             <td>
-              <input type="checkbox" checked={createUser.active} onChange={e => setCreateUser({ ...createUser, active: e.target.checked })} />
+              <input type="checkbox" checked={createUser.isActive} onChange={e => setCreateUser({ ...createUser, isActive: e.target.checked })} />
             </td>
             <td>
               <button onClick={handleCreate}>Create</button>
@@ -236,7 +236,7 @@ const UMS = ({ notify }) => {
                     />
                   </td>
                   <td>
-                    <input type="checkbox" checked={editUser.active} onChange={e => setEditUser({ ...editUser, active: e.target.checked })} />
+                    <input type="checkbox" checked={editUser.isActive} onChange={e => setEditUser({ ...editUser, isActive: e.target.checked })} />
                   </td>
                   <td>
                     <button onClick={handleSave}>Save</button>
@@ -256,7 +256,7 @@ const UMS = ({ notify }) => {
                   <td>
                     <input
                       type="checkbox"
-                      checked={user.active}
+                      checked={user.isActive}
                       disabled //Make checkbox in read-only mode
                     />
                   </td>

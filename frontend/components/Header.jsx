@@ -33,6 +33,8 @@ const Header = ({ notify }) => {
 
   // on change
   useEffect(verify, [navigate, setIsAdmin, setIsUser, isAdmin, isUser]);
+
+  
   return (
     <header>
       {isUser ? (

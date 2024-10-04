@@ -9,7 +9,6 @@ route.post("/login", Login, (req, res) => res.send("Logged in"));
 route.get("/verify", CheckLogin, (req, res) => res.send("logged in"));
 
 //user
-const userRoute = express.Router();
 route.use(CheckLogin);
 route.get("/logout", logoutController);
 route.get("/viewProfile", viewProfileController);
@@ -24,8 +23,6 @@ route.post("/checkgroup", async (req, res) => {
 });
 
 //admin
-const adminRoute = express.Router();
-// adminRoute.use(CheckLogin);
 route.use(async (req, res, next) => {
   if (await CheckGroup(req.username, "admin")) {
     next();
@@ -41,4 +38,4 @@ route.put("/editUser", validateSkipPassword, validatePassword, encrpytPassword, 
 
 route.use((req, res) => res.status(404).send("not found"));
 
-export { route, userRoute, adminRoute };
+export default route;
