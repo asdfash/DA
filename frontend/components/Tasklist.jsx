@@ -23,38 +23,16 @@ const Tasklist = ({ notify , app}) => {
 
   const handleEmailChange = e => {
     e.preventDefault();
+    navigate("/app/plan")
     // Logic for changing email
-    axios
-      .put("/editEmail", {
-        email: newEmail,
-      })
-      .then(() => {
-        if (newEmail != email) {
-          notify("email changed", true);
-        }
-        setNewEmail("");
-        getProfile();
-      })
-      .catch(err => {
-        err.response.status === 401 ? navigate("/login") :notify("invalid email", false);
-      });
+    
+
   };
 
   const handlePasswordChange = e => {
     e.preventDefault();
     // Logic for changing password
-    axios
-      .put("/editPassword", {
-        password: newPassword,
-      })
-      .then(() => {
-        notify("password changed", true);
-        setNewPassword("");
-        getProfile();
-      })
-      .catch(err => {
-        err.response.status === 401 ? navigate("/login") :notify("invalid password", false);
-      });
+
   };
   return (
     <main className="main center">
