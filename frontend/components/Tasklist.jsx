@@ -3,59 +3,57 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Tasklist = ({ notify , app}) => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [newEmail, setNewEmail] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+// import popups
+import Planlist from "./Planlist";
+
+const Tasklist = ({ notify, app }) => {
+  const headers = ["open", "todo", "doing", "done", "closed"];
+  const [planOpen, setPlanOpen] = useState(false);
+  const [isPL, setIsPL] = useState(false);
   const navigate = useNavigate();
+
   //on mount
-  
-  const getProfile = () => {
-    console.log(app)
-    axios.get("/viewProfile").then(res => {
-      setUsername(res.data.username);
-      setEmail(res.data.email);
-    });
-  };
-
-  useEffect(getProfile, [app]);
-
-  const handleEmailChange = e => {
-    e.preventDefault();
-    navigate("/app/plan")
-    // Logic for changing email
-    
-
-  };
-
-  const handlePasswordChange = e => {
-    e.preventDefault();
-    // Logic for changing password
-
-  };
+  useEffect(() => {
+    if (!app) {
+      navigate("/");
+    }
+    axios
+      .post("/checkgroup", { group: "pl" })
+      .then(() => setIsPL(true))
+      .catch(() => setIsPL(false));
+  }, [app, navigate]);
   return (
-    <main className="main center">
-      <div>
-        <p>
-          Username: <strong>{username}</strong>
-        </p>
-        <p>
-          Email: <strong>{email}</strong>
-        </p>
+    <main className="main">
+      <Planlist notify={notify} app={app} planOpen={planOpen} setPlanOpen={setPlanOpen} />
+      <div className="split">
+        <div>
+          <strong>{app}</strong> | <button onClick={() => setPlanOpen(true)}> details</button>
+        </div>
+        <div>
+          <button onClick={() => setPlanOpen(true)}>Plans</button> {isPL ? <button onClick={() => setPlanOpen(true)}>Create Task</button> : ""}
+        </div>
       </div>
-      <form onSubmit={handleEmailChange}>
-        <div>
-          <input type="text" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="Enter new email" />
-          <button type="submit">Change Email</button>
-        </div>
-      </form>
-      <form onSubmit={handlePasswordChange}>
-        <div>
-          <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Enter new password" />
-          <button type="submit">Change Password</button>
-        </div>
-      </form>
+
+      <table className="task">
+        <thead>
+          <tr>
+            {headers.map(header => (
+              <th key={header}>{header}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {/* ensure that lines show */}
+          <tr>
+            {headers.map(header => (
+              <td key={header}>
+                <div className="card">a</div>
+                <div className="card">{header === "open" ? "b" : ""}</div>
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
     </main>
   );
 };

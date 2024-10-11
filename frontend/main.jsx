@@ -17,7 +17,6 @@ import Login from "./components/Login";
 import NotFound from "./components/NotFound";
 import Notification from "./components/Notification";
 import Tasklist from "./components/Tasklist";
-import Planlist from "./components/Planlist";
 
 //axios defaults
 axios.defaults.withCredentials = true;
@@ -44,8 +43,6 @@ const App = () => {
         <Route path="/tms" element={<Applist notify={notify} setApp={setSelectedApp} />} />
         <Route path="/profile" element={<Profile notify={notify} />} />
         <Route path="/app" element={<Tasklist notify={notify} app={selectedApp}/>} />
-        <Route path="/app/plan" element={<Planlist notify={notify} app={selectedApp}/>} />
-        {/* <Route path="/app/task" element={}/> */}
         <Route path="/UMS" element={<UMS notify={notify} />} />
         <Route path="/login" element={<Login notify={notify} />} />
         <Route path="*" element={<NotFound />} />

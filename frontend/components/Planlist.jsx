@@ -4,9 +4,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 
-const Planlist = ({ notify, app }) => {
+const Planlist = ({ notify, app, planOpen, setPlanOpen }) => {
   const [updateBool, updateInfo] = useState(false);
-  const [planOpen, setPlanOpen] = useState(true);
   const [isPM, setIsPM] = useState();
   const headers = ["MVP Name", "Start Date", "End Date", "Colour"];
   const [createPlan, setCreatePlan] = useState({
@@ -19,15 +18,14 @@ const Planlist = ({ notify, app }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!app){
-      navigate('/')
+    if (!app) {
+      navigate("/");
     }
     axios
       .post("/checkgroup", { group: "pm" })
       .then(() => setIsPM(true))
       .catch(() => setIsPM(false));
 
-    
     setPlans([
       {
         mvpname: "ssss",
@@ -68,7 +66,7 @@ const Planlist = ({ notify, app }) => {
   };
 
   return (
-    <Modal isOpen={planOpen} onRequestClose={closePlans} overlayClassName="overlay">
+    <Modal isOpen={planOpen} onRequestClose={closePlans}>
       <main className="main">
         <button className="close" onClick={closePlans}>
           X

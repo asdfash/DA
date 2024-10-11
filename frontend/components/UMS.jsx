@@ -166,11 +166,9 @@ const UMS = ({ notify }) => {
 
       <table className="table">
         <thead>
-          <tr>
-            {headers.map(header => (
-              <th key={header}>{header}</th>
-            ))}
-          </tr>
+          {headers.map(header => (
+            <th key={header}>{header}</th>
+          ))}
         </thead>
 
         <tbody>

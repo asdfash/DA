@@ -36,7 +36,7 @@ const Header = ({ notify }) => {
   return (
     <>
       {isUser ? (
-        <header className="header">
+        <header className="header split">
           <div>
             <a href="/">Task Management</a> | {isAdmin ? <a href="/UMS">User Management</a> : <span> </span>}
           </div>
