@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Applist = ({ notify, setApp }) => {
+const Applist = ({ notify, setSelectedApp }) => {
   const [updateBool, updateInfo] = useState(false);
   const [isPL, setIsPL] = useState();
   const headers = ["Acronym", "Running Number", "Start Date", "End Date", "Task Create", "Task Open", "Task To Do", "Task Doing", "Task Done", "Description"];
@@ -24,7 +24,7 @@ const Applist = ({ notify, setApp }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setApp("");
+    setSelectedApp({});
     axios
       .post("/checkgroup", { group: "pl" })
       .then(() => setIsPL(true))
@@ -33,7 +33,7 @@ const Applist = ({ notify, setApp }) => {
       {
         acronym: "ssss",
         rnumber: 0,
-        description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,",
+        description: "\n h".repeat(100) ,
         startdate: "2024-12-23",
         enddate: "2025-11-23",
         taskcreate: { value: "pm", label: "pm" },
@@ -82,7 +82,7 @@ const Applist = ({ notify, setApp }) => {
             break;
         }
       });
-  }, [updateBool, navigate, setApp]);
+  }, [updateBool, navigate, setSelectedApp]);
 
   const handleCreate = e => {
     e.preventDefault();
@@ -103,7 +103,7 @@ const Applist = ({ notify, setApp }) => {
   };
 
   const handleView = app => {
-    setApp(app.acronym);
+    setSelectedApp(app);
     navigate("/app");
   };
 

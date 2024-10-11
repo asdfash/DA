@@ -4,33 +4,38 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 // import popups
-import Planlist from "./Planlist";
+import Planlist from "./Modal/Planlist";
+import App from "./Modal/App";
+import Task from "./Modal/Task";
 
-const Tasklist = ({ notify, app }) => {
+const Tasklist = ({ notify, selectedApp }) => {
   const headers = ["open", "todo", "doing", "done", "closed"];
-  const [planOpen, setPlanOpen] = useState(false);
+  const [popup, setPopup] = useState("");
   const [isPL, setIsPL] = useState(false);
+  const [selectedtaskid, setSelectedtaskid] = useState("");
   const navigate = useNavigate();
 
   //on mount
   useEffect(() => {
-    if (!app) {
+    if (!selectedApp.acronym) {
       navigate("/");
     }
     axios
       .post("/checkgroup", { group: "pl" })
       .then(() => setIsPL(true))
       .catch(() => setIsPL(false));
-  }, [app, navigate]);
+  }, [navigate, selectedApp]);
   return (
     <main className="main">
-      <Planlist notify={notify} app={app} planOpen={planOpen} setPlanOpen={setPlanOpen} />
+      <Planlist notify={notify} selectedApp={selectedApp} popup={popup} setPopup={setPopup} />
+      <App selectedApp={selectedApp} popup={popup} setPopup={setPopup} />
+      <Task notify={notify} taskid={selectedtaskid} popup={popup} setPopup={setPopup} />
       <div className="split">
         <div>
-          <strong>{app}</strong> | <button onClick={() => setPlanOpen(true)}> details</button>
+          <strong>{selectedApp.acronym}</strong> | <button onClick={() => setPopup("app")}> details</button>
         </div>
         <div>
-          <button onClick={() => setPlanOpen(true)}>Plans</button> {isPL ? <button onClick={() => setPlanOpen(true)}>Create Task</button> : ""}
+          <button onClick={() => setPopup("planlist")}>Plans</button> {isPL ? <button onClick={() => setPopup("createtask")}>Create Task</button> : ""}
         </div>
       </div>
 
@@ -47,7 +52,19 @@ const Tasklist = ({ notify, app }) => {
           <tr>
             {headers.map(header => (
               <td key={header}>
-                <div className="card">a</div>
+                <div
+                  className="card"
+                  style={{borderLeft:'10px solid'.concat('#d00') }}
+                  id={"a"}
+                  onClick={e => {
+                    setSelectedtaskid(e.target.id);
+                    setPopup("task");
+                  }}
+                >
+                  <strong>Task id</strong>
+                  <p>task Name</p>
+                  <p>task owner</p>
+                </div>
                 <div className="card">{header === "open" ? "b" : ""}</div>
               </td>
             ))}

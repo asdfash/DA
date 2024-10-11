@@ -8,17 +8,16 @@ const Profile = ({ notify }) => {
   const [email, setEmail] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [updateBool, updateInfo] = useState(false);
   const navigate = useNavigate();
+  
   //on mount
-
-  const getProfile = () => {
+  useEffect(() => {
     axios.get("/viewProfile").then(res => {
       setUsername(res.data.username);
       setEmail(res.data.email);
     });
-  };
-
-  useEffect(getProfile, []);
+  }, [updateBool]);
 
   const handleEmailChange = e => {
     e.preventDefault();
@@ -32,10 +31,10 @@ const Profile = ({ notify }) => {
           notify("email changed", true);
         }
         setNewEmail("");
-        getProfile();
+        updateInfo(!updateBool);
       })
       .catch(err => {
-        err.response.status === 401 ? navigate("/login") :notify("invalid email", false);
+        err.response.status === 401 ? navigate("/login") : notify("invalid email", false);
       });
   };
 
@@ -49,10 +48,10 @@ const Profile = ({ notify }) => {
       .then(() => {
         notify("password changed", true);
         setNewPassword("");
-        getProfile();
+        updateInfo(!updateBool);
       })
       .catch(err => {
-        err.response.status === 401 ? navigate("/login") :notify("invalid password", false);
+        err.response.status === 401 ? navigate("/login") : notify("invalid password", false);
       });
   };
   return (

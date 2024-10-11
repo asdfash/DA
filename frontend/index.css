@@ -13,7 +13,6 @@
 }
 
 .split {
-  padding: 1rem;
   display: flex;
   justify-content: space-between;
 }
@@ -41,7 +40,7 @@ textarea {
   background-color: #f8f9fa;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  z-index: 100;
+  z-index: 10;
 }
 
 .notification {
@@ -65,16 +64,15 @@ textarea {
 }
 
 table {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   text-align: center;
-
   border-collapse: collapse;
 }
 
 .task {
   table-layout: fixed;
   width: 100%;
-  min-height: 80vh;
+  min-height: 75vh;
 }
 table th,
 table td {
@@ -82,7 +80,8 @@ table td {
 }
 
 .task td,
-.task th {
+.task th .app td {
+  padding: 0.2rem;
   vertical-align: top;
   border-left: 1px solid #ccc;
 }
@@ -95,30 +94,26 @@ table td {
 .card {
   background-color: #f8f8f8;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
+  border-radius: 10px;
+  padding: 0.5rem;
   text-align: left;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 0.5rem;
 }
 
-.popup-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.popup-overlay {
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.685);
+.card p,
+.card strong{
+  margin:0.1rem;
 }
 
 .close {
   position: absolute;
   margin: 1rem;
   right: 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
 }

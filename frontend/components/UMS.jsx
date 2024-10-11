@@ -165,12 +165,13 @@ const UMS = ({ notify }) => {
       </form>
 
       <table className="table">
-        <thead>
-          {headers.map(header => (
-            <th key={header}>{header}</th>
-          ))}
+      <thead>
+          <tr>
+            {headers.map(header => (
+              <th key={header}>{header}</th>
+            ))}
+          </tr>
         </thead>
-
         <tbody>
           {/* create user */}
           <tr>
