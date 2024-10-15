@@ -29,7 +29,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
       id: "ss001",
       name: "eat food",
       app: "ss",
-      plan: { value: "sheep", label: "sheep" },
+      plan: { value: "a", label: "a" },
       state: "open",
       creator: "xx",
       owner: "yy",
@@ -37,24 +37,34 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
       description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,",
       notes: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,".repeat(20),
     });
+
+    setEditTask({
+      plan: task.plan,
+      notes: ""
+    });
+
     setPlans([
       { value: "a", label: "a" },
       { value: "b", label: "b" },
       { value: "c", label: "c" },
     ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateBool]);
-  const closeTask = () => setPopup("");
-
+  const cancelTask = () => setPopup("");
+  const saveTask = () => {
+    notify("task saved",true)
+    setPopup("")
+  };
   return (
-    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "task"} onRequestClose={closeTask}>
+    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "task"} onAfterOpen={()=>updateInfo(!updateBool)} onRequestClose={cancelTask}>
       <main className="main">
-        <button className="close" onClick={closeTask}>
+        <button className="close" onClick={cancelTask}>
           X
         </button>
         <table className="task">
           <tbody>
             <tr>
-              <td style={{ textAlign: "left", paddingLeft: "1rem" }}>
+              <td style={{ textAlign: "left", padding: "1rem", width: "30%" }}>
                 <p>
                   <strong> Task name: </strong> {task.name}
                 </p>
@@ -92,10 +102,10 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
               </td>
               <td style={{ textAlign: "left", paddingLeft: "1rem" }}>
                 <strong> Notes: </strong>
-                <textarea rows={25} cols={110} value={task.notes} disabled></textarea>
+                <textarea rows={25} style={{ width: "100%" }} value={task.notes} disabled></textarea>
                 <p>
                   <strong> Add Notes: </strong>
-                  <textarea rows={15} cols={110} value={editTask.notes} onChange={e => setEditTask({ ...editTask, notes: e.target.value })}></textarea>
+                  <textarea rows={15} style={{ width: "100%" }} value={editTask.notes} onChange={e => setEditTask({ ...editTask, notes: e.target.value })}></textarea>
                 </p>
               </td>
             </tr>
@@ -103,10 +113,10 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
         </table>
 
         <div className="actions">
-          <button onClick={closeTask}>Save and A1</button>
-          <button onClick={closeTask}>Save and A2</button>
-          <button onClick={closeTask}>Save Changes</button>
-          <button onClick={closeTask}>Cancel</button>
+          <button onClick={cancelTask}>Save and A1</button>
+          <button onClick={cancelTask}>Save and A2</button>
+          <button onClick={saveTask}>Save Changes</button>
+          <button onClick={cancelTask}>Cancel</button>
         </div>
       </main>
     </Modal>

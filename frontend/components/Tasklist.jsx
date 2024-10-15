@@ -7,11 +7,12 @@ import { useNavigate } from "react-router-dom";
 import Planlist from "./Modal/Planlist";
 import App from "./Modal/App";
 import Task from "./Modal/Task";
+import CreateTask from "./Modal/CreateTask";
 
 const Tasklist = ({ notify, selectedApp }) => {
   const headers = ["open", "todo", "doing", "done", "closed"];
   const [popup, setPopup] = useState("");
-  const [isPL, setIsPL] = useState(false);
+  const [isCreate, setIsCreate] = useState(false);
   const [selectedtaskid, setSelectedtaskid] = useState("");
   const navigate = useNavigate();
 
@@ -21,21 +22,22 @@ const Tasklist = ({ notify, selectedApp }) => {
       navigate("/");
     }
     axios
-      .post("/checkgroup", { group: "pl" })
-      .then(() => setIsPL(true))
-      .catch(() => setIsPL(false));
+      .post("/checkpermission", { permission: "create", app_acronym: selectedApp.acronym })
+      .then(() => setIsCreate(true))
+      .catch(() => setIsCreate(false));
   }, [navigate, selectedApp]);
   return (
     <main className="main">
       <Planlist notify={notify} selectedApp={selectedApp} popup={popup} setPopup={setPopup} />
       <App selectedApp={selectedApp} popup={popup} setPopup={setPopup} />
       <Task notify={notify} taskid={selectedtaskid} popup={popup} setPopup={setPopup} />
+      <CreateTask notify={notify} app={selectedApp.acronym} popup={popup} setPopup={setPopup} />
       <div className="split">
         <div>
           <strong>{selectedApp.acronym}</strong> | <button onClick={() => setPopup("app")}> details</button>
         </div>
         <div>
-          <button onClick={() => setPopup("planlist")}>Plans</button> {isPL ? <button onClick={() => setPopup("createtask")}>Create Task</button> : ""}
+          <button onClick={() => setPopup("planlist")}>Plans</button> {isCreate ? <button onClick={() => setPopup("createtask")}>Create Task</button> : ""}
         </div>
       </div>
 
@@ -52,9 +54,9 @@ const Tasklist = ({ notify, selectedApp }) => {
           <tr>
             {headers.map(header => (
               <td key={header}>
-                <div
+                {header==='open'?<div
                   className="card"
-                  style={{borderLeft:'10px solid'.concat('#d00') }}
+                  style={{ borderLeft: "10px solid".concat("#d00") }}
                   id={"a"}
                   onClick={e => {
                     setSelectedtaskid(e.target.id);
@@ -64,8 +66,7 @@ const Tasklist = ({ notify, selectedApp }) => {
                   <strong>Task id</strong>
                   <p>task Name</p>
                   <p>task owner</p>
-                </div>
-                <div className="card">{header === "open" ? "b" : ""}</div>
+                </div>:''}
               </td>
             ))}
           </tr>

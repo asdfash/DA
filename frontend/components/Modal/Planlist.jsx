@@ -28,44 +28,53 @@ const Planlist = ({ notify, selectedApp, popup, setPopup }) => {
       .then(() => setIsPM(true))
       .catch(() => setIsPM(false));
 
-    setPlans([
-      {
-        mvpname: "ssss",
-        startdate: "2024-12-23",
-        enddate: "2025-11-23",
-        colour: "#0101a1",
-      },
-      {
-        mvpname: "xxxx",
-        startdate: "2024-12-23",
-        enddate: "2025-11-23",
-        colour: "#02a001",
-      },
-      {
-        mvpname: "yyyy",
-        startdate: "2024-12-23",
-        enddate: "2025-11-23",
-        colour: "#a10101",
-      },
-    ]);
+    axios
+      .post("/viewplans", { acronym: selectedApp.acronym })
+      .then(res => setPlans(res.data))
+      .catch(err => {
+        switch (err.response.status) {
+          case 401:
+            navigate("/login");
+            break;
+          case 403:
+            navigate("/");
+            break;
+        }
+      });
   }, [updateBool, navigate, selectedApp.acronym]);
 
   const handleCreate = e => {
     e.preventDefault();
-    console.log(createPlan);
-    setCreatePlan({
-      mvpname: "",
-      startdate: "",
-      enddate: "",
-      colour: "#ffffff",
-    });
-    notify("plan created", true);
-    updateInfo(!updateBool);
+    axios
+      .post("/addplan", { ...createPlan, acronym: selectedApp.acronym })
+      .then(() => {
+        setCreatePlan({
+          mvpname: "",
+          startdate: "",
+          enddate: "",
+          colour: "#ffffff",
+        });
+        notify("plan created", true);
+        updateInfo(!updateBool);
+      })
+      .catch(err => {
+        switch (err.response.status) {
+          case 401:
+            navigate("/login");
+            break;
+          case 403:
+            navigate("/");
+            break;
+          default:
+            notify(err.response.data, false);
+            updateInfo(!updateBool);
+        }
+      });
   };
   const closePlans = () => setPopup("");
 
   return (
-    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "planlist"} onRequestClose={closePlans}>
+    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "planlist"} onAfterOpen={() => updateInfo(!updateBool)} onRequestClose={closePlans}>
       <main className="main">
         <button className="close" onClick={closePlans}>
           X

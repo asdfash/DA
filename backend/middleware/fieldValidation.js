@@ -66,20 +66,76 @@ export const validateAdmin = (req, res, next) => {
   next();
 };
 
+export const validateApp = async (req, res, next) => {
+  //app_acronym
+  const acronymregex = /^[a-zA-Z0-9_]+$/;
+  if (!acronymregex.test(req.body.acronym)) {
+    return res.status(406).send("Invalid acronym");
+  }
+  try {
+    const [[{ count }]] = await db.execute("select count(*) as count from application where app_acronym = ?", [req.body.acronym]);
 
-export const validateApp = (req, res, next) => {
-  const regex = /^[a-zA-Z0-9_]+$/;
-  if (!regex.test(req.body.acronym)) {
-    return res.status(406).send("Invalid app acronym");
+    if (count > 0) {
+      return res.status(406).send("acronym already taken");
+    }
+  } catch (error) {
+    return res.status(500).send("server error, try again later");
+  }
+  //app_startdate, app_enddate
+  const dateregex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+  if (!dateregex.test(req.body.startdate)) {
+    return res.status(406).send("Invalid start date");
+  }
+  if (!dateregex.test(req.body.enddate)) {
+    return res.status(406).send("Invalid end date");
+  }
+  //permissions
+  if (!req.body.taskcreate.value) {
+    return res.status(406).send("Invalid task create");
+  }
+  if (!req.body.taskopen.value) {
+    return res.status(406).send("Invalid task open");
+  }
+  if (!req.body.tasktodo.value) {
+    return res.status(406).send("Invalid task to do");
+  }
+  if (!req.body.taskdoing.value) {
+    return res.status(406).send("Invalid task doing");
+  }
+  if (!req.body.taskdone.value) {
+    return res.status(406).send("Invalid task done");
   }
   next();
 };
 
-export const validatePlan = (req, res, next) => {
+export const validatePlan = async (req, res, next) => {
   const regex = /^[a-zA-Z0-9_]+$/;
-  if (!regex.test(req.body.name)) {
+  if (!regex.test(req.body.mvpname)) {
     return res.status(406).send("Invalid plan MVP name");
   }
+
+  try {
+    const [[{ count }]] = await db.execute("select count(*) as count from plan where plan_app_acronym = ? and plan_mvp_name = ?", [req.body.acronym, req.body.mvpname]);
+
+    if (count > 0) {
+      return res.status(406).send("mvp name already taken");
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("server error, try again later");
+  }
+
+  const dateregex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+  if (!dateregex.test(req.body.startdate)) {
+    return res.status(406).send("Invalid start date");
+  }
+  if (!dateregex.test(req.body.enddate)) {
+    return res.status(406).send("Invalid end date");
+  }
+
+  const colourregex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+  if (!colourregex.test(req.body.colour)) {
+    return res.status(406).send("Invalid colour");
+  }
   next();
 };
-

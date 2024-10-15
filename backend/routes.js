@@ -1,7 +1,7 @@
 import express from "express";
-import { AddGroupsController, addUserController, editEmailController, editPasswordController, editUserController, logoutController, viewGroupsController, viewProfileController, viewUsersController } from "./controllers.js";
+import { AddAppController, AddGroupController, AddPlanController, addUserController, CheckPermissionController, editEmailController, editPasswordController, editUserController, logoutController, ViewAppsController, viewGroupsController, ViewPlansController, viewProfileController, viewUsersController } from "./controllers.js";
 import { CheckGroup, CheckLogin, encrpytPassword, Login } from "./middleware/auth.js";
-import { validateEmail, validateGroupname, validatePassword, validateUsername, validateAdmin, validateSkipPassword } from "./middleware/fieldValidation.js";
+import { validateEmail, validateGroupname, validatePassword, validateUsername, validateAdmin, validateSkipPassword, validateApp, validatePlan } from "./middleware/fieldValidation.js";
 
 //unprotected routes
 const route = express.Router();
@@ -25,6 +25,39 @@ route.post("/checkgroup", async (req, res) => {
     res.status(403).send("user not permitted, check with admin");
   }
 });
+route.post("/checkpermission", CheckPermissionController);
+route.get("/viewapps", ViewAppsController);
+route.post(
+  "/addapp",
+  async (req, res, next) => {
+    const isGroup = await CheckGroup(req.username, "pl");
+    if (isGroup === "err") {
+      res.status(500).send("server error, try again later");
+    } else if (isGroup) {
+      next();
+    } else {
+      return res.status(403).send("user not permitted, check with admin");
+    }
+  },
+  validateApp,
+  AddAppController
+);
+route.post("/viewplans", ViewPlansController);
+route.post(
+  "/addplan",
+  async (req, res, next) => {
+    const isGroup = await CheckGroup(req.username, "pm");
+    if (isGroup === "err") {
+      res.status(500).send("server error, try again later");
+    } else if (isGroup) {
+      next();
+    } else {
+      return res.status(403).send("user not permitted, check with admin");
+    }
+  },
+  validatePlan,
+  AddPlanController
+);
 
 //admin
 route.use(async (req, res, next) => {
@@ -38,12 +71,10 @@ route.use(async (req, res, next) => {
   }
 });
 route.get("/viewUsers", viewUsersController);
-route.post("/addGroup", validateGroupname, AddGroupsController);
+route.post("/addGroup", validateGroupname, AddGroupController);
 route.post("/addUser", validateUsername, validatePassword, encrpytPassword, validateEmail, addUserController);
 route.put("/editUser", validateSkipPassword, validatePassword, encrpytPassword, validateEmail, validateAdmin, editUserController);
 
 route.use((req, res) => res.status(404).send("not found"));
 
 export default route;
-
-

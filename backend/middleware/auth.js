@@ -49,7 +49,7 @@ export const CheckLogin = async (req, res, next) => {
 
 // helper function, check routes for acutal use
 // returns true/false/'err'
-export const CheckGroup = async (username, group, strict) => {
+export const CheckGroup = async (username, group) => {
   try {
     const [[{ count }]] = await db.execute("select count(*) as count from user_groups where username = ? and groupname = ?", [username, group]);
     return count > 0;

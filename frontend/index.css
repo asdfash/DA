@@ -58,9 +58,9 @@ textarea {
 }
 
 .failure {
-  background-color: lightcoral;
+  background-color: lightsalmon;
   border: 1px solid red;
-  color: maroon;
+  color: rgb(95, 4, 4);
 }
 
 table {

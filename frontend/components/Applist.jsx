@@ -29,44 +29,7 @@ const Applist = ({ notify, setSelectedApp }) => {
       .post("/checkgroup", { group: "pl" })
       .then(() => setIsPL(true))
       .catch(() => setIsPL(false));
-    setApps([
-      {
-        acronym: "ssss",
-        rnumber: 0,
-        description: "\n h".repeat(100) ,
-        startdate: "2024-12-23",
-        enddate: "2025-11-23",
-        taskcreate: { value: "pm", label: "pm" },
-        taskopen: { value: "pm", label: "pm" },
-        tasktodo: { value: "pm", label: "pm" },
-        taskdoing: { value: "pm", label: "pm" },
-        taskdone: { value: "pm", label: "pm" },
-      },
-      {
-        acronym: "xyy",
-        rnumber: 0,
-        description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,",
-        startdate: "2024-12-23",
-        enddate: "2025-11-23",
-        taskcreate: { value: "pm", label: "pm" },
-        taskopen: { value: "pm", label: "pm" },
-        tasktodo: { value: "pm", label: "pm" },
-        taskdoing: { value: "pm", label: "pm" },
-        taskdone: { value: "pm", label: "pm" },
-      },
-      {
-        acronym: "zzz",
-        rnumber: 0,
-        description: "esque eu, pretium quis",
-        startdate: "2024-12-23",
-        enddate: "2025-11-23",
-        taskcreate: { value: "pm", label: "pm" },
-        taskopen: { value: "pm", label: "pm" },
-        tasktodo: { value: "pm", label: "pm" },
-        taskdoing: { value: "pm", label: "pm" },
-        taskdone: { value: "pm", label: "pm" },
-      },
-    ]);
+
     axios
       .get("/viewGroups")
       .then(res => {
@@ -82,24 +45,54 @@ const Applist = ({ notify, setSelectedApp }) => {
             break;
         }
       });
+    axios
+      .get("/viewapps")
+      .then(res => setApps(res.data))
+      .catch(err => {
+        switch (err.response.status) {
+          case 401:
+            navigate("/login");
+            break;
+          case 403:
+            navigate("/");
+            break;
+        }
+      });
   }, [updateBool, navigate, setSelectedApp]);
 
   const handleCreate = e => {
     e.preventDefault();
     console.log(createApp);
-    setCreateApp({
-      acronym: "",
-      description: "",
-      startdate: "",
-      enddate: "",
-      taskcreate: [],
-      taskopen: [],
-      tasktodo: [],
-      taskdoing: [],
-      taskdone: [],
-    });
-    notify("app created", true);
-    updateInfo(!updateBool);
+    axios
+      .post("/addapp", createApp)
+      .then(() => {
+        setCreateApp({
+          acronym: "",
+          description: "",
+          startdate: "",
+          enddate: "",
+          taskcreate: [],
+          taskopen: [],
+          tasktodo: [],
+          taskdoing: [],
+          taskdone: [],
+        });
+        notify("app created", true);
+        updateInfo(!updateBool);
+      })
+      .catch(err => {
+        switch (err.response.status) {
+          case 401:
+            navigate("/login");
+            break;
+          case 403:
+            navigate("/");
+            break;
+          default:
+            notify(err.response.data, false);
+            updateInfo(!updateBool);
+        }
+      });
   };
 
   const handleView = app => {
