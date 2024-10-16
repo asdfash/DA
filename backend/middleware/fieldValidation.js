@@ -122,14 +122,12 @@ export const validatePlan = async (req, res, next) => {
   if (!regex.test(req.body.mvpname)) {
     return res.status(406).send("Invalid plan MVP name");
   }
-
   try {
-    const [[{ count }]] = await db.execute("select count(*) as count from plan where plan_app_acronym = ? and plan_mvp_name = ?", [req.body.acronym, req.body.mvpname]);
+    const [[{ count }]] = await db.execute("select count(*) as count from plan where plan_app_acronym = ? and plan_mvp_name = ?", [req.body.app_acronym, req.body.mvpname]);
     if (count > 0) {
       return res.status(406).send("mvp name already taken");
     }
   } catch (error) {
-    console.log(error);
     return res.status(500).send("server error, try again later");
   }
 
@@ -153,35 +151,48 @@ export const validateExistingApp = async (req, res, next) => {
   try {
     const [apparray] = await db.execute({ sql: `select distinct app_acronym from application`, rowsAsArray: true });
     const apps = apparray.flat();
-    console.log(apps)
     if (!apps.includes(req.body.app_acronym)) {
       return res.status(406).send("Invalid App Acronym");
     }
   } catch (error) {
-    console.log(error);
     return res.status(500).send("server error, try again later");
   }
-  next()
+  next();
 };
 
 export const validateExistingPlan = async (req, res, next) => {
+  if (!req.body.plan) {
+    req.body.plan = { value: "", label: "" };
+  }
   try {
-    const [planarray] = await db.execute({ sql: `select distinct plan_mvp_name from plan where plan_app_acronym = ?`, rowsAsArray: true },[req.body.app_acronym]);
+    const [planarray] = await db.execute({ sql: `select distinct plan_mvp_name from plan where plan_app_acronym = ?`, rowsAsArray: true }, [req.body.app_acronym]);
     const plans = planarray.flat();
     if (req.body.plan.value && !plans.includes(req.body.plan.value)) {
       return res.status(406).send("Invalid plan");
     }
   } catch (error) {
-    console.log(error);
     return res.status(500).send("server error, try again later");
   }
-  next()
+  next();
 };
 
 export const validateTaskName = (req, res, next) => {
   const nameregex = /^[a-zA-Z0-9_]+$/;
   if (!nameregex.test(req.body.name)) {
     return res.status(406).send("Invalid acronym");
+  }
+  next();
+};
+
+export const validateTaskNotes = async (req, res, next) => {
+  const date = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+  try {
+    const [[{ task_notes: notes, task_state: state }]] = await db.execute("select task_notes, task_state from task where task_id =?", [req.body.id]);
+
+    req.body.notes = req.body.notes ? notes.concat("\n\n**********\n", req.username, " on ", date, " (UTC)\nstate: ", state, "\n\n", req.body.notes) : notes;
+  } catch (error) {
+    return res.status(500).send("server error, try again later");
   }
   next();
 };

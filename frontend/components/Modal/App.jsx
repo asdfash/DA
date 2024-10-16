@@ -76,7 +76,8 @@ const App = ({ app_acronym, notify, popup, setPopup }) => {
               </td>
               <td>
                 <p>
-                  <strong> Description: </strong> {app.description}
+                  <strong> Description: </strong> 
+                  <pre>{app.description}</pre>
                 </p>
               </td>
             </tr>

@@ -33,6 +33,7 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
         .post("/viewplans", { acronym: app_acronym })
         .then(res => setPlans(res.data))
         .catch(err => {
+          notify(err.response.data,false);
           switch (err.response.status) {
             case 401:
               navigate("/login");
@@ -43,7 +44,7 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
           }
         });
     }
-  }, [updateBool, navigate, app_acronym, popup]);
+  }, [updateBool, navigate, app_acronym, popup, notify]);
 
   const handleCreate = e => {
     e.preventDefault();
@@ -60,6 +61,7 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
         updateInfo(!updateBool);
       })
       .catch(err => {
+        notify(err.response.data, false);
         switch (err.response.status) {
           case 401:
             navigate("/login");
@@ -68,7 +70,6 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
             navigate("/");
             break;
           default:
-            notify(err.response.data, false);
             updateInfo(!updateBool);
         }
       });

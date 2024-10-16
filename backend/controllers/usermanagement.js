@@ -14,9 +14,9 @@ const editAccounts = async (req, username, fields) => {
 const addGroups = (groups, username) => {
   groups.forEach(async group => {
     try {
-      await db.execute("insert into `user_groups` values (?,?)", [group, username || null]);
+      await db.execute("insert into `user_groups` values (?,?)", [group, username || ""]);
     } catch (error) {
-      return error;
+      return "err";
     }
   });
 };

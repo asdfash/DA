@@ -62,6 +62,7 @@ const Applist = ({ notify, setapp_acronym }) => {
 
   const handleCreate = e => {
     e.preventDefault();
+    console.log(createApp.description)
     axios
       .post("/addapp", createApp)
       .then(() => {

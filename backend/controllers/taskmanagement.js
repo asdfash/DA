@@ -71,6 +71,9 @@ export const CheckPermissionController = async (req, res) => {
     doing: "app_permit_doing",
     done: "app_permit_done",
   };
+  if (!permissions[req.body.permission]) {
+    return res.status(403).send("user not permitted, check with admin");
+  }
   try {
     const [[{ group }]] = await db.execute(`select ${permissions[req.body.permission]} as \`group\` from application where app_acronym = ?`, [req.body.app_acronym]);
     const isGroup = await CheckGroup(req.username, group);
@@ -109,7 +112,6 @@ export const ViewTasksController = async (req, res) => {
     );
     res.json(tasks);
   } catch (error) {
-    console.log(error);
     res.status(500).send("server error, try again later");
   }
 };
@@ -131,7 +133,6 @@ export const ViewTaskController = async (req, res) => {
       createdate: task.task_createdate,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).send("server error, try again later");
   }
 };
@@ -148,40 +149,64 @@ export const viewPlanListController = async (req, res) => {
 
 export const addTaskController = async (req, res) => {
   try {
-    const [[{ app_rnumber:rnumber, app_permit_create:groupname }]] = await db.execute("select app_rnumber, app_permit_create from application where app_acronym =?", [req.body.app_acronym]);
-    const canCreate = CheckGroup(req.username, groupname);
-    if (canCreate === "err") {
-      return res.status(500).send("server error, try again later");
-    } else if (!canCreate) {
-      return res.status(403).send("user not permitted, check with admin");
-    }
+    const [[{ rnumber }]] = await db.execute("select app_rnumber as rnumber from application where app_acronym =?", [req.body.app_acronym]);
     const connection = await db.getConnection();
     try {
       await connection.beginTransaction();
       const createdate = new Date().toISOString().slice(0, 10);
       await connection.execute("INSERT INTO `task` (`task_id`, `task_name`, `task_description` , `task_notes`, `task_plan`,task_app_acronym, `task_state`, `task_creator`, `task_owner`,`task_createdate`) VALUES (?,?,?,?,?,?,?,?,?,?); ", [req.body.app_acronym.concat("_", rnumber), req.body.name, req.body.description, req.body.notes, req.body.plan.value || "", req.body.app_acronym, "open", req.username, req.username, createdate]);
       await connection.execute("update application set app_rnumber = ? where app_acronym = ? ", [rnumber + 1, req.body.app_acronym]);
-      res.send("app created");
       await connection.commit();
+      return res.send("task created");
     } catch (error) {
       await connection.rollback();
-      res.status(500).send("server error, try again later");
+      return res.status(500).send("server error, try again later");
     } finally {
-      connection.release();
+      return connection.release();
     }
   } catch (error) {
-    console.log(error);
+    res.status(500).send("server error, try again later");
+  }
+};
+
+export const promoteTaskController = async (req, res) => {
+  const states = {
+    open: "todo",
+    todo: "doing",
+    doing: "done",
+    done: "closed",
+  };
+
+  const [[{ state }]] = await db.execute("select task_state as state from task where task_id =?", [req.body.id]);
+  try {
+    await db.execute("update task set task_state = ? where task_id = ?", [states[state], req.body.id]);
+    res.send("task promoted");
+  } catch (error) {
+    res.status(500).send("server error, try again later");
+  }
+};
+
+export const demoteTaskController = async (req, res) => {
+  const states = {
+    doing: "todo",
+    done: "doing",
+  };
+
+  const [[{ state }]] = await db.execute("select task_state as state from task where task_id =?", [req.body.id]);
+  try {
+    await db.execute("update task set task_state = ? where task_id = ?", [states[state], req.body.id]);
+    res.send("task demoted");
+  } catch (error) {
     res.status(500).send("server error, try again later");
   }
 };
 
 export const editTaskController = async (req, res) => {
+  const [[{ state }]] = await db.execute("select task_state as state from task where task_id =?", [req.body.id]);
   try {
-    const createdate = new Date().toISOString().slice(0, 10);
-    await db.execute("INSERT INTO `task` (`task_id`, `task_name`, `task_description` , `task_notes`, `task_plan`,task_app_acronym, `task_state`, `task_creator`, `task_owner`,`task_createdate`) VALUES (?,?,?,?,?,?,?,?,?,?); ", ["a and b", req.body.name, req.body.description, req.body.notes, req.body.plan.value || "", req.body.app_acronym, "open", req.username, req.username, createdate]);
-    res.send("app created");
+    await db.execute(`update task set ${state === "done" || state === "open" ? `task_plan = \'${req.body.plan.value}\' , ` : ""} task_notes = ?, task_owner = ? where task_id =  ? `, [req.body.notes, req.username, req.body.id]);
+    res.send("task edited");
   } catch (error) {
-    console.log(error);
     res.status(500).send("server error, try again later");
   }
 };
