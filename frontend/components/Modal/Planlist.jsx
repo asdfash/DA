@@ -6,7 +6,7 @@ import Modal from "react-modal";
 
 Modal.setAppElement("#root");
 
-const Planlist = ({ notify, selectedApp, popup, setPopup }) => {
+const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
   const [updateBool, updateInfo] = useState(false);
   const [isPM, setIsPM] = useState();
   const headers = ["MVP Name", "Start Date", "End Date", "Colour"];
@@ -14,45 +14,47 @@ const Planlist = ({ notify, selectedApp, popup, setPopup }) => {
     mvpname: "",
     startdate: "",
     enddate: "",
-    colour: "#ffffff",
+    colour: "#f8f8f8",
   });
   const [plans, setPlans] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!selectedApp.acronym) {
-      navigate("/");
-    }
-    axios
-      .post("/checkgroup", { group: "pm" })
-      .then(() => setIsPM(true))
-      .catch(() => setIsPM(false));
+    if (popup === "planlist") {
+      if (!app_acronym) {
+        navigate("/");
+      }
+      axios
+        .post("/checkgroup", { group: "pm" })
+        .then(() => setIsPM(true))
+        .catch(() => setIsPM(false));
 
-    axios
-      .post("/viewplans", { acronym: selectedApp.acronym })
-      .then(res => setPlans(res.data))
-      .catch(err => {
-        switch (err.response.status) {
-          case 401:
-            navigate("/login");
-            break;
-          case 403:
-            navigate("/");
-            break;
-        }
-      });
-  }, [updateBool, navigate, selectedApp.acronym]);
+      axios
+        .post("/viewplans", { acronym: app_acronym })
+        .then(res => setPlans(res.data))
+        .catch(err => {
+          switch (err.response.status) {
+            case 401:
+              navigate("/login");
+              break;
+            case 403:
+              navigate("/");
+              break;
+          }
+        });
+    }
+  }, [updateBool, navigate, app_acronym, popup]);
 
   const handleCreate = e => {
     e.preventDefault();
     axios
-      .post("/addplan", { ...createPlan, acronym: selectedApp.acronym })
+      .post("/addplan", { ...createPlan, app_acronym: app_acronym })
       .then(() => {
         setCreatePlan({
           mvpname: "",
           startdate: "",
           enddate: "",
-          colour: "#ffffff",
+          colour: "#f8f8f8",
         });
         notify("plan created", true);
         updateInfo(!updateBool);

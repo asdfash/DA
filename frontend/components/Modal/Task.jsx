@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import Modal from "react-modal";
 import { useState, useEffect } from "react";
+import axios from "axios";
 import Select from "react-select";
 
 Modal.setAppElement("#root");
@@ -10,53 +11,51 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
   const [task, setTask] = useState({
     id: "",
     name: "",
-    app: "",
+    app_acronym: "",
     plan: {},
-    state: "",
+    state: "open",
     creator: "",
     owner: "",
     createdate: "",
     description: "",
     notes: "",
   });
+
+  const buttons = {
+    open: { promote: "Release" },
+    todo: { promote: "Pickup" },
+    doing: { promote: "Seek Approval", demote: "Giveup" },
+    done: { promote: "Approve", demote: "Reject" },
+    closed:{}
+  };
+
   const [plans, setPlans] = useState([]);
   const [editTask, setEditTask] = useState({
     plans: "",
     notes: "",
   });
+
   useEffect(() => {
-    setTask({
-      id: "ss001",
-      name: "eat food",
-      app: "ss",
-      plan: { value: "a", label: "a" },
-      state: "open",
-      creator: "xx",
-      owner: "yy",
-      createddate: "2024-12-31",
-      description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,",
-      notes: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,".repeat(20),
-    });
+    if (taskid) {
+      axios.post("/viewtask", { id: taskid }).then(res => {
+        setTask(res.data);
+        setEditTask({
+          plan: res.data.plan,
+          notes: "",
+        });
+        axios.post("/viewplanlist", { app_acronym: res.data.app_acronym }).then(res => setPlans(res.data));
+      });
+    }
+  }, [taskid, updateBool]);
 
-    setEditTask({
-      plan: task.plan,
-      notes: ""
-    });
-
-    setPlans([
-      { value: "a", label: "a" },
-      { value: "b", label: "b" },
-      { value: "c", label: "c" },
-    ]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateBool]);
   const cancelTask = () => setPopup("");
   const saveTask = () => {
-    notify("task saved",true)
-    setPopup("")
+    notify("task saved", true);
+    setPopup("");
   };
+
   return (
-    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "task"} onAfterOpen={()=>updateInfo(!updateBool)} onRequestClose={cancelTask}>
+    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "task"} onAfterOpen={() => updateInfo(!updateBool)} onRequestClose={cancelTask}>
       <main className="main">
         <button className="close" onClick={cancelTask}>
           X
@@ -71,7 +70,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
                 <p>
                   <strong>Task id: </strong> {task.id}
                 </p>
-                <p>
+                <div>
                   <strong> task plan: </strong>
                   <Select
                     isClearable
@@ -81,7 +80,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
                       setEditTask({ ...editTask, plan: e });
                     }}
                   />
-                </p>
+                </div>
                 <p>
                   <strong> State: </strong> {task.state}
                 </p>
@@ -92,7 +91,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
                   <strong> Owner: </strong> {task.owner}
                 </p>
                 <p>
-                  <strong> Created On: </strong>
+                  <strong> Created on: </strong>
                   <input type="date" value={task.createdate} disabled></input>
                 </p>
                 <p>
@@ -113,8 +112,8 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
         </table>
 
         <div className="actions">
-          <button onClick={cancelTask}>Save and A1</button>
-          <button onClick={cancelTask}>Save and A2</button>
+          {buttons[task.state].demote ? <button onClick={cancelTask}>Save and {buttons[task.state].demote}</button> : <></>}
+          {buttons[task.state].promote ? <button onClick={cancelTask}>Save and {buttons[task.state].promote}</button> : <></>}
           <button onClick={saveTask}>Save Changes</button>
           <button onClick={cancelTask}>Cancel</button>
         </div>

@@ -7,33 +7,47 @@ import { useNavigate } from "react-router-dom";
 
 Modal.setAppElement("#root");
 
-const CreateTask = ({ notify, app, popup, setPopup }) => {
+const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
   const [updateBool, updateInfo] = useState(false);
   const [username, setUsername] = useState("");
-  const [task, setTask] = useState({});
+  const [task, setTask] = useState({
+    name:""
+  });
   const [plans, setPlans] = useState([]);
   const navigate = useNavigate();
 
-  axios
-    .get("/viewProfile")
-    .then(res => {
-      setUsername(res.data.username);
-    });
-
   useEffect(() => {
-    setTask({ name: "", app: app, plan: {}, description: "", notes: "" });
-    setPlans([
-      { value: "a", label: "a" },
-      { value: "bheoihfsdasoh", label: "bhefaijfhaw" },
-      { value: "c", label: "c" },
-    ]);
-  }, [app, updateBool, navigate]);
+    if (popup === "createtask") {
+      axios.get("/viewProfile").then(res => {
+        setUsername(res.data.username);
+        axios.post("/viewplanlist", { app_acronym: app_acronym }).then(res => setPlans(res.data));
+      });
+
+      setTask({ name: "", app_acronym: app_acronym, plan: {}, description: "", notes: "" });
+    }
+  }, [app_acronym, updateBool, navigate, popup]);
 
   const cancelTask = () => setPopup("");
 
   const handleCreate = () => {
-    notify("Task created", true);
-    setPopup("");
+    axios
+      .post("/addtask", task)
+      .then(() => {
+        notify("Task created", true);
+        setPopup("");
+      })
+      .catch(err => {
+        switch (err.response.status) {
+          case 401:
+            navigate("/login");
+            break;
+          case 403:
+            navigate("/");
+            break;
+          default:
+            notify(err.response.data, false);
+        }
+      });
   };
 
   return (
@@ -51,13 +65,13 @@ const CreateTask = ({ notify, app, popup, setPopup }) => {
                   <input type="text" value={task.name} onChange={e => setTask({ ...task, name: e.target.value })}></input>
                 </p>
                 <p>
-                  <strong> App acronym: </strong> {app}
+                  <strong> App acronym: </strong> {app_acronym}
                 </p>
-                <tr>
-                  <td style={{ textAlign: "center" }}>
+                <div>
+                  <div style={{ textAlign: "Left" }}>
                     <strong> Task plan: </strong>
-                  </td>
-                  <td style={{ borderLeft: "none" }}>
+                  </div>
+                  <div style={{ borderLeft: "none" }}>
                     <Select
                       isClearable
                       value={task.plan}
@@ -66,8 +80,8 @@ const CreateTask = ({ notify, app, popup, setPopup }) => {
                         setTask({ ...task, plan: e });
                       }}
                     />
-                  </td>
-                </tr>
+                  </div>
+                </div>
 
                 <p>
                   <strong> State: </strong> open

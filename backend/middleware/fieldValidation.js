@@ -89,22 +89,31 @@ export const validateApp = async (req, res, next) => {
   if (!dateregex.test(req.body.enddate)) {
     return res.status(406).send("Invalid end date");
   }
-  //permissions
-  if (!req.body.taskcreate.value) {
-    return res.status(406).send("Invalid task create");
+
+  try {
+    const [grouparray] = await db.execute({ sql: `select distinct groupname from user_groups`, rowsAsArray: true });
+    const groups = grouparray.flat();
+
+    //permissions
+    if (!groups.includes(req.body.taskcreate.value)) {
+      return res.status(406).send("Invalid task create");
+    }
+    if (!groups.includes(req.body.taskopen.value)) {
+      return res.status(406).send("Invalid task open");
+    }
+    if (!groups.includes(req.body.tasktodo.value)) {
+      return res.status(406).send("Invalid task to do");
+    }
+    if (!groups.includes(req.body.taskdoing.value)) {
+      return res.status(406).send("Invalid task doing");
+    }
+    if (!groups.includes(req.body.taskdone.value)) {
+      return res.status(406).send("Invalid task done");
+    }
+  } catch (error) {
+    res.status(500).send("server error, try again later");
   }
-  if (!req.body.taskopen.value) {
-    return res.status(406).send("Invalid task open");
-  }
-  if (!req.body.tasktodo.value) {
-    return res.status(406).send("Invalid task to do");
-  }
-  if (!req.body.taskdoing.value) {
-    return res.status(406).send("Invalid task doing");
-  }
-  if (!req.body.taskdone.value) {
-    return res.status(406).send("Invalid task done");
-  }
+
   next();
 };
 
@@ -116,7 +125,6 @@ export const validatePlan = async (req, res, next) => {
 
   try {
     const [[{ count }]] = await db.execute("select count(*) as count from plan where plan_app_acronym = ? and plan_mvp_name = ?", [req.body.acronym, req.body.mvpname]);
-
     if (count > 0) {
       return res.status(406).send("mvp name already taken");
     }
@@ -136,6 +144,44 @@ export const validatePlan = async (req, res, next) => {
   const colourregex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
   if (!colourregex.test(req.body.colour)) {
     return res.status(406).send("Invalid colour");
+  }
+
+  next();
+};
+
+export const validateExistingApp = async (req, res, next) => {
+  try {
+    const [apparray] = await db.execute({ sql: `select distinct app_acronym from application`, rowsAsArray: true });
+    const apps = apparray.flat();
+    console.log(apps)
+    if (!apps.includes(req.body.app_acronym)) {
+      return res.status(406).send("Invalid App Acronym");
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("server error, try again later");
+  }
+  next()
+};
+
+export const validateExistingPlan = async (req, res, next) => {
+  try {
+    const [planarray] = await db.execute({ sql: `select distinct plan_mvp_name from plan where plan_app_acronym = ?`, rowsAsArray: true },[req.body.app_acronym]);
+    const plans = planarray.flat();
+    if (req.body.plan.value && !plans.includes(req.body.plan.value)) {
+      return res.status(406).send("Invalid plan");
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("server error, try again later");
+  }
+  next()
+};
+
+export const validateTaskName = (req, res, next) => {
+  const nameregex = /^[a-zA-Z0-9_]+$/;
+  if (!nameregex.test(req.body.name)) {
+    return res.status(406).send("Invalid acronym");
   }
   next();
 };

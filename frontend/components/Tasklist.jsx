@@ -9,32 +9,54 @@ import App from "./Modal/App";
 import Task from "./Modal/Task";
 import CreateTask from "./Modal/CreateTask";
 
-const Tasklist = ({ notify, selectedApp }) => {
+const Tasklist = ({ notify, app_acronym }) => {
   const headers = ["open", "todo", "doing", "done", "closed"];
   const [popup, setPopup] = useState("");
+  const [tasks, setTasks] = useState({
+    open: [],
+    todo: [],
+    doing: [],
+    done: [],
+    closed: [],
+  });
   const [isCreate, setIsCreate] = useState(false);
   const [selectedtaskid, setSelectedtaskid] = useState("");
   const navigate = useNavigate();
 
-  //on mount
   useEffect(() => {
-    if (!selectedApp.acronym) {
+    if (!app_acronym) {
       navigate("/");
     }
     axios
-      .post("/checkpermission", { permission: "create", app_acronym: selectedApp.acronym })
+      .post("/checkpermission", { permission: "create", app_acronym: app_acronym })
       .then(() => setIsCreate(true))
       .catch(() => setIsCreate(false));
-  }, [navigate, selectedApp]);
+    axios
+      .post("/viewtasks", { app_acronym: app_acronym})
+      .then(res => setTasks(res.data))
+      .catch(err => {
+        switch (err.response.status) {
+          case 401:
+            navigate("/login");
+            break;
+          case 403:
+            navigate("/");
+            break;
+          default:
+            notify(err.response.data, false);
+        }
+      });
+  }, [navigate, notify, popup, app_acronym]);
+
   return (
     <main className="main">
-      <Planlist notify={notify} selectedApp={selectedApp} popup={popup} setPopup={setPopup} />
-      <App selectedApp={selectedApp} popup={popup} setPopup={setPopup} />
+      <Planlist notify={notify} app_acronym={app_acronym} popup={popup} setPopup={setPopup} />
+      <App notify={notify} app_acronym={app_acronym} popup={popup} setPopup={setPopup} />
       <Task notify={notify} taskid={selectedtaskid} popup={popup} setPopup={setPopup} />
-      <CreateTask notify={notify} app={selectedApp.acronym} popup={popup} setPopup={setPopup} />
+      <CreateTask notify={notify} app_acronym={app_acronym} popup={popup} setPopup={setPopup} />
       <div className="split">
         <div>
-          <strong>{selectedApp.acronym}</strong> | <button onClick={() => setPopup("app")}> details</button>
+          <strong>{app_acronym}</strong> | <button onClick={() => setPopup("app")}> details</button>
         </div>
         <div>
           <button onClick={() => setPopup("planlist")}>Plans</button> {isCreate ? <button onClick={() => setPopup("createtask")}>Create Task</button> : ""}
@@ -50,23 +72,25 @@ const Tasklist = ({ notify, selectedApp }) => {
           </tr>
         </thead>
         <tbody>
-          {/* ensure that lines show */}
           <tr>
             {headers.map(header => (
               <td key={header}>
-                {header==='open'?<div
-                  className="card"
-                  style={{ borderLeft: "10px solid".concat("#d00") }}
-                  id={"a"}
-                  onClick={e => {
-                    setSelectedtaskid(e.target.id);
-                    setPopup("task");
-                  }}
-                >
-                  <strong>Task id</strong>
-                  <p>task Name</p>
-                  <p>task owner</p>
-                </div>:''}
+                {tasks[header].map(task => (
+                  <div
+                    className="card"
+                    style={{ borderLeft: "10px solid".concat(task.colour || "#f8f8f8") }}
+                    key={task.id}
+                    onClick={e => {
+                      e.preventDefault();
+                      setSelectedtaskid(task.id);
+                      setPopup("task");
+                    }}
+                  >
+                    <strong>{task.id}</strong>
+                    <p>{task.name}</p>
+                    <p>owner: {task.owner}</p>
+                  </div>
+                ))}
               </td>
             ))}
           </tr>
