@@ -33,7 +33,7 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
         .post("/viewplans", { acronym: app_acronym })
         .then(res => setPlans(res.data))
         .catch(err => {
-          notify(err.response.data,false);
+          notify(err.response.data, false);
           switch (err.response.status) {
             case 401:
               navigate("/login");
