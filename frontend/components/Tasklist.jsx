@@ -27,25 +27,27 @@ const Tasklist = ({ notify, app_acronym }) => {
     if (!app_acronym) {
       navigate("/");
     }
-    axios
-      .post("/checkpermission", { app_acronym: app_acronym })
-      .then(() => setIsCreate(true))
-      .catch(() => setIsCreate(false));
-    axios
-      .post("/viewtasks", { app_acronym: app_acronym })
-      .then(res => setTasks(res.data))
-      .catch(err => {
-        switch (err.response.status) {
-          case 401:
-            navigate("/login");
-            break;
-          case 403:
-            navigate("/");
-            break;
-          default:
-            notify(err.response.data, false);
-        }
-      });
+    if (popup === "") {
+      axios
+        .post("/checkpermission", { app_acronym: app_acronym })
+        .then(() => setIsCreate(true))
+        .catch(() => setIsCreate(false));
+      axios
+        .post("/viewtasks", { app_acronym: app_acronym })
+        .then(res => setTasks(res.data))
+        .catch(err => {
+          switch (err.response.status) {
+            case 401:
+              navigate("/login");
+              break;
+            case 403:
+              navigate("/");
+              break;
+            default:
+              notify(err.response.data, false);
+          }
+        });
+    }
   }, [navigate, notify, popup, app_acronym]);
 
   return (
