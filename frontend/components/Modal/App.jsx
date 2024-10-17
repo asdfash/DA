@@ -75,10 +75,10 @@ const App = ({ app_acronym, notify, popup, setPopup }) => {
                 </p>
               </td>
               <td>
-                <p>
+                <div>
                   <strong> Description: </strong> 
                   <pre>{app.description}</pre>
-                </p>
+                </div>
               </td>
             </tr>
           </tbody>
