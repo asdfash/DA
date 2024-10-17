@@ -128,7 +128,7 @@ export const addTaskController = async (req, res) => {
     try {
       await connection.beginTransaction();
       const createdate = new Date().toISOString().slice(0, 10);
-      await connection.execute("INSERT INTO `task` (`task_id`, `task_name`, `task_description` , `task_notes`, `task_plan`,task_app_acronym, `task_state`, `task_creator`, `task_owner`,`task_createdate`) VALUES (?,?,?,?,?,?,?,?,?,?); ", [req.body.app_acronym.concat("_", rnumber), req.body.name, req.body.description, req.body.notes, req.body.plan.value || "", req.body.app_acronym, "open", req.username, req.username, createdate]);
+      await connection.execute("INSERT INTO `task` (`task_id`, `task_name`, `task_description` , `task_notes`, `task_plan`,task_app_acronym, `task_state`, `task_creator`, `task_owner`,`task_createdate`) VALUES (?,?,?,?,?,?,?,?,?,?); ", [`${req.body.app_acronym}_${rnumber}`, req.body.name, req.body.description, req.body.notes, req.body.plan.value || "", req.body.app_acronym, "open", req.username, req.username, createdate]);
       await connection.execute("update application set app_rnumber = ? where app_acronym = ? ", [rnumber + 1, req.body.app_acronym]);
       await connection.commit();
       return res.send("task created");

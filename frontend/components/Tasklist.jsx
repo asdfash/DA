@@ -80,7 +80,7 @@ const Tasklist = ({ notify, app_acronym }) => {
                 {tasks[header].map(task => (
                   <div
                     className="card"
-                    style={{ borderLeft: "10px solid".concat(task.colour || "#f8f8f8") }}
+                    style={{ borderLeft: `10px solid ${task.colour || "#f8f8f8"}` }}
                     key={task.id}
                     onClick={e => {
                       e.preventDefault();
