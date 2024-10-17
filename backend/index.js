@@ -14,7 +14,7 @@ app.use(
   })
 );
 
-app.use(express.json()); //Setup express to take in json
+app.use(express.json()); //Setup express to take in body data in json
 app.use(cookieParser());
 
 //routing

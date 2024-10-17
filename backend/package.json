@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --env-file=.env index.js",
-    "test": "node --env-file=.env test.js"
+    "dev": "nodemon --env-file=.env index.js"
   },
   "author": "",
   "license": "ISC",

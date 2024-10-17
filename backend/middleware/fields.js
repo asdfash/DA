@@ -141,7 +141,7 @@ export const validateCreatePlan = async (req, res, next) => {
 
   const colourregex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
   if (!colourregex.test(req.body.colour)) {
-    return res.status(406).send("Invalid colour");
+    return res.status(406).send("Invalid colour selected");
   }
 
   next();

@@ -71,6 +71,7 @@ route.post(
 route.post("/promotetask", CheckStatePermission, promoteTaskController);
 route.post("/demotetask", CheckStatePermission, demoteTaskController);
 route.post("/edittask", CheckStatePermission, validateExistingPlan, stampTaskNotes, editTaskController);
+
 //admin
 route.use(async (req, res, next) => {
   const isGroup = await CheckGroup(req.username, "admin");
