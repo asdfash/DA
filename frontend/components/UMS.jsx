@@ -125,7 +125,7 @@ const UMS = ({ notify }) => {
   const handleSave = e => {
     e.preventDefault();
     axios
-      .put("/editUser", {
+      .patch("/editUser", {
         username: editUser.username,
         password: editUser.password,
         email: editUser.email,

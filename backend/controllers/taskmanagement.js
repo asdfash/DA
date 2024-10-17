@@ -1,5 +1,5 @@
-import { CheckGroup } from "../middleware/auth.js";
 import db from "../mysql.js";
+import transporter from "../mail.js";
 
 //applist
 export const ViewAppsController = async (req, res) => {
@@ -58,32 +58,6 @@ export const AddPlanController = async (req, res) => {
   try {
     await db.execute("INSERT INTO `plan` (`plan_mvp_name`,`plan_app_acronym`, `plan_startdate`, `plan_enddate`,`plan_colour`) VALUES (?,?,?,?,?); ", [req.body.mvpname, req.body.app_acronym, req.body.startdate, req.body.enddate, req.body.colour]);
     res.send("plan created");
-  } catch (error) {
-    res.status(500).send("server error, try again later");
-  }
-};
-
-export const CheckPermissionController = async (req, res) => {
-  const permissions = {
-    create: "app_permit_create",
-    open: "app_permit_open",
-    todo: "app_permit_todolist",
-    doing: "app_permit_doing",
-    done: "app_permit_done",
-  };
-  if (!permissions[req.body.permission]) {
-    return res.status(403).send("user not permitted, check with admin");
-  }
-  try {
-    const [[{ group }]] = await db.execute(`select ${permissions[req.body.permission]} as \`group\` from application where app_acronym = ?`, [req.body.app_acronym]);
-    const isGroup = await CheckGroup(req.username, group);
-    if (isGroup === "err") {
-      res.status(500).send("server error, try again later");
-    } else if (isGroup) {
-      res.send("permitted");
-    } else {
-      return res.status(403).send("user not permitted, check with admin");
-    }
   } catch (error) {
     res.status(500).send("server error, try again later");
   }
@@ -177,12 +151,35 @@ export const promoteTaskController = async (req, res) => {
     done: "closed",
   };
 
-  const [[{ state }]] = await db.execute("select task_state as state from task where task_id =?", [req.body.id]);
+  const mailer = async app_acronym => {
+    try {
+      const [[{ group }]] = await db.execute("select app_permit_done as `group` from application where app_acronym = ?", [app_acronym]);
+      const [userarray] = await db.execute({ sql: `select username from user_groups where groupname = ?`, rowsAsArray: true }, [group]);
+      const [emailarray] = await db.execute({ sql: `select distinct email from accounts where username in ('${userarray.flat().join(`','`)}')`, rowsAsArray: true });
+      const emails = emailarray.flat();
+      if (emails.length > 0) {
+        transporter.sendMail({
+          // from: "esmeralda.mohr30@ethereal.email",
+          to: emails,
+          subject: "A task has been sent for approval",
+          text: "Hi user, \n\n a task has been sent for approval. Please log in to the TMS to approve or reject it. \n Best regards, \n TMS team \n \n This is a computer generated email, please do not reply to it.",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   try {
+    const [[{ task_state: state, task_app_acronym: app_acronym }]] = await db.execute("select task_state,task_app_acronym from task where task_id =?", [req.body.id]);
     await db.execute("update task set task_state = ? where task_id = ?", [states[state], req.body.id]);
     res.send("task promoted");
+    if (state === "doing") {
+      mailer(app_acronym);
+    }
   } catch (error) {
-    res.status(500).send("server error, try again later");
+    console.log(error);
+    return res.status(500).send("server error, try again later");
   }
 };
 
@@ -191,9 +188,8 @@ export const demoteTaskController = async (req, res) => {
     doing: "todo",
     done: "doing",
   };
-
-  const [[{ state }]] = await db.execute("select task_state as state from task where task_id =?", [req.body.id]);
   try {
+    const [[{ state }]] = await db.execute("select task_state as state from task where task_id =?", [req.body.id]);
     await db.execute("update task set task_state = ? where task_id = ?", [states[state], req.body.id]);
     res.send("task demoted");
   } catch (error) {
@@ -202,8 +198,10 @@ export const demoteTaskController = async (req, res) => {
 };
 
 export const editTaskController = async (req, res) => {
-  const [[{ state }]] = await db.execute("select task_state as state from task where task_id =?", [req.body.id]);
+  // refer to validate notes middleware for stamp
+
   try {
+    const [[{ state }]] = await db.execute("select task_state as state from task where task_id =?", [req.body.id]);
     await db.execute(`update task set ${state === "done" || state === "open" ? `task_plan = \'${req.body.plan.value}\' , ` : ""} task_notes = ?, task_owner = ? where task_id =  ? `, [req.body.notes, req.username, req.body.id]);
     res.send("task edited");
   } catch (error) {

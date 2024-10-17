@@ -66,7 +66,7 @@ export const validateAdmin = (req, res, next) => {
   next();
 };
 
-export const validateApp = async (req, res, next) => {
+export const validateCreateApp = async (req, res, next) => {
   //app_acronym
   const acronymregex = /^[a-zA-Z0-9_]+$/;
   if (!acronymregex.test(req.body.acronym)) {
@@ -117,7 +117,7 @@ export const validateApp = async (req, res, next) => {
   next();
 };
 
-export const validatePlan = async (req, res, next) => {
+export const validateCreatePlan = async (req, res, next) => {
   const regex = /^[a-zA-Z0-9_]+$/;
   if (!regex.test(req.body.mvpname)) {
     return res.status(406).send("Invalid plan MVP name");
@@ -184,14 +184,20 @@ export const validateTaskName = (req, res, next) => {
   next();
 };
 
-export const validateTaskNotes = async (req, res, next) => {
-  const date = new Date().toISOString().slice(0, 19).replace("T", " ");
-
+export const stampTaskNotes = async (req, res, next) => {
+  const timestamp = new Date().toISOString().slice(0, 19).replace("T", " ");
+  let notes = "";
+  let state = "open";
   try {
-    const [[{ task_notes: notes, task_state: state }]] = await db.execute("select task_notes, task_state from task where task_id =?", [req.body.id]);
+    if (req.body.id) {
+      const [[task]] = await db.execute("select task_notes, task_state from task where task_id =?", [req.body.id]);
+      notes = task.task_notes;
+      state = task.task_state;
+    }
 
-    req.body.notes = req.body.notes ? notes.concat("\n\n**********\n", req.username, " on ", date, " (UTC)\nstate: ", state, "\n\n", req.body.notes) : notes;
+    req.body.notes = req.body.notes ? notes.concat("**********\n", req.username, " on ", timestamp, " (UTC)\nstate: ", state, "\n\n", req.body.notes, "\n\n") : notes;
   } catch (error) {
+    console.log(error);
     return res.status(500).send("server error, try again later");
   }
   next();

@@ -1,8 +1,8 @@
 import express from "express";
 import { AddGroupController, addUserController, viewGroupsController, editEmailController, editPasswordController, editUserController, logoutController, viewProfileController, viewUsersController } from "./controllers/usermanagement.js";
-import { AddAppController, AddPlanController, addTaskController, CheckPermissionController, demoteTaskController, editTaskController, promoteTaskController, ViewAppsController, viewPlanListController, ViewPlansController, ViewTaskController, ViewTasksController } from "./controllers/taskmanagement.js";
-import { CheckCreatePermission, CheckGroup, CheckLogin, CheckStatePermission, encrpytPassword, Login } from "./middleware/auth.js";
-import { validateEmail, validateGroupname, validatePassword, validateUsername, validateAdmin, validateSkipPassword, validateApp, validatePlan, validateTaskName, validateExistingApp, validateExistingPlan, validateTaskNotes } from "./middleware/fieldValidation.js";
+import { AddAppController, AddPlanController, addTaskController, demoteTaskController, editTaskController, promoteTaskController, ViewAppsController, viewPlanListController, ViewPlansController, ViewTaskController, ViewTasksController } from "./controllers/taskmanagement.js";
+import { CheckGroup, CheckLogin, CheckStatePermission, encrpytPassword, Login } from "./middleware/auth.js";
+import { validateEmail, validateGroupname, validatePassword, validateUsername, validateAdmin, validateSkipPassword, validateCreateApp, validateCreatePlan, validateTaskName, validateExistingApp, validateExistingPlan, stampTaskNotes } from "./middleware/fieldValidation.js";
 
 //unprotected routes
 const route = express.Router();
@@ -13,8 +13,8 @@ route.get("/verify", CheckLogin, (req, res) => res.send("logged in"));
 route.use(CheckLogin);
 route.get("/logout", logoutController);
 route.get("/viewProfile", viewProfileController);
-route.put("/editEmail", validateEmail, editEmailController);
-route.put("/editPassword", validatePassword, encrpytPassword, editPasswordController);
+route.patch("/editEmail", validateEmail, editEmailController);
+route.patch("/editPassword", validatePassword, encrpytPassword, editPasswordController);
 route.get("/viewGroups", viewGroupsController);
 route.post("/checkgroup", async (req, res) => {
   const isGroup = await CheckGroup(req.username, req.body.group);
@@ -26,13 +26,15 @@ route.post("/checkgroup", async (req, res) => {
     res.status(403).send("user not permitted, check with admin");
   }
 });
-route.post("/checkpermission", CheckPermissionController);
+route.post("/checkpermission", validateExistingApp, CheckStatePermission, (req, res) => {
+  res.send("ok");
+});
 route.get("/viewapps", ViewAppsController);
 route.post("/viewplans", ViewPlansController);
 route.post("/viewtasks", ViewTasksController);
 route.post("/viewtask", ViewTaskController);
 route.post("/viewplanlist", viewPlanListController);
-route.post("/addtask", validateTaskName, validateExistingApp, validateExistingPlan, CheckCreatePermission, addTaskController);
+route.post("/addtask", validateTaskName, validateExistingApp, validateExistingPlan, CheckStatePermission, stampTaskNotes, addTaskController);
 route.post(
   "/addplan",
   async (req, res, next) => {
@@ -45,7 +47,7 @@ route.post(
       return res.status(403).send("user not permitted, check with admin");
     }
   },
-  validatePlan,
+  validateCreatePlan,
   validateExistingApp,
   AddPlanController
 );
@@ -62,13 +64,13 @@ route.post(
       return res.status(403).send("user not permitted, check with admin");
     }
   },
-  validateApp,
+  validateCreateApp,
   AddAppController
 );
 
 route.post("/promotetask", CheckStatePermission, promoteTaskController);
 route.post("/demotetask", CheckStatePermission, demoteTaskController);
-route.post("/edittask", CheckStatePermission, validateExistingPlan, validateTaskNotes, editTaskController);
+route.post("/edittask", CheckStatePermission, validateExistingPlan, stampTaskNotes, editTaskController);
 //admin
 route.use(async (req, res, next) => {
   const isGroup = await CheckGroup(req.username, "admin");
@@ -83,7 +85,7 @@ route.use(async (req, res, next) => {
 route.get("/viewUsers", viewUsersController);
 route.post("/addGroup", validateGroupname, AddGroupController);
 route.post("/addUser", validateUsername, validatePassword, encrpytPassword, validateEmail, addUserController);
-route.put("/editUser", validateSkipPassword, validatePassword, encrpytPassword, validateEmail, validateAdmin, editUserController);
+route.patch("/editUser", validateSkipPassword, validatePassword, encrpytPassword, validateEmail, validateAdmin, editUserController);
 
 //404
 route.use((req, res) => res.status(404).send("not found"));

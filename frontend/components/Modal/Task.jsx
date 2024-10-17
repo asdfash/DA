@@ -10,7 +10,6 @@ Modal.setAppElement("#root");
 const Task = ({ notify, taskid, popup, setPopup }) => {
   const navigate = useNavigate();
   const [edit, setEdit] = useState(false);
-  const [updateBool, updateInfo] = useState(false);
   const [task, setTask] = useState({
     id: "",
     name: "",
@@ -44,14 +43,16 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
         .post("/viewtask", { id: taskid })
         .then(res => {
           setTask(res.data);
-          setEditTask({
-            plan: res.data.plan,
-            notes: "",
-          });
-          axios.post("/viewplanlist", { app_acronym: res.data.app_acronym }).then(res => setPlans(res.data));
           axios
-            .post("/checkpermission", { permission: res.data.state, app_acronym: res.data.app_acronym })
-            .then(() => setEdit(true))
+            .post("/checkpermission", { app_acronym: res.data.app_acronym, id: taskid })
+            .then(() => {
+              setEdit(true);
+              setEditTask({
+                plan: res.data.plan,
+                notes: "",
+              });
+              axios.post("/viewplanlist", { app_acronym: res.data.app_acronym }).then(res => setPlans(res.data));
+            })
             .catch(() => setEdit(false));
         })
         .catch(err => {
@@ -59,7 +60,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
           navigate("/login");
         });
     }
-  }, [navigate, notify, taskid, updateBool]);
+  }, [navigate, notify, taskid]);
 
   const cancelTask = () => setPopup("");
 
@@ -154,7 +155,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
   };
 
   return (
-    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "task"} onAfterOpen={() => updateInfo(!updateBool)} onRequestClose={cancelTask}>
+    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "task"} onRequestClose={cancelTask}>
       <main className="main">
         <button className="close" onClick={cancelTask}>
           X

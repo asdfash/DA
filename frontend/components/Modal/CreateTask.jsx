@@ -10,7 +10,7 @@ Modal.setAppElement("#root");
 const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
   const [updateBool, updateInfo] = useState(false);
   const [username, setUsername] = useState("");
-  const [task, setTask] = useState({name:""});
+  const [task, setTask] = useState({ name: "" });
   const [plans, setPlans] = useState([]);
   const navigate = useNavigate();
 
@@ -75,7 +75,7 @@ const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
                       value={task.plan}
                       options={plans}
                       onChange={e => {
-                        setTask({ ...task, plan: e });
+                        setTask({ ...task, plan: e || { value: "", label: "" } });
                       }}
                     />
                   </div>

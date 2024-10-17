@@ -28,11 +28,11 @@ const Tasklist = ({ notify, app_acronym }) => {
       navigate("/");
     }
     axios
-      .post("/checkpermission", { permission: "create", app_acronym: app_acronym })
+      .post("/checkpermission", { app_acronym: app_acronym })
       .then(() => setIsCreate(true))
       .catch(() => setIsCreate(false));
     axios
-      .post("/viewtasks", { app_acronym: app_acronym})
+      .post("/viewtasks", { app_acronym: app_acronym })
       .then(res => setTasks(res.data))
       .catch(err => {
         switch (err.response.status) {

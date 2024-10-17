@@ -10,7 +10,7 @@ const Profile = ({ notify }) => {
   const [newPassword, setNewPassword] = useState("");
   const [updateBool, updateInfo] = useState(false);
   const navigate = useNavigate();
-  
+
   //on mount
   useEffect(() => {
     axios.get("/viewProfile").then(res => {
@@ -23,7 +23,7 @@ const Profile = ({ notify }) => {
     e.preventDefault();
     // Logic for changing email
     axios
-      .put("/editEmail", {
+      .patch("/editEmail", {
         email: newEmail,
       })
       .then(() => {
@@ -42,7 +42,7 @@ const Profile = ({ notify }) => {
     e.preventDefault();
     // Logic for changing password
     axios
-      .put("/editPassword", {
+      .patch("/editPassword", {
         password: newPassword,
       })
       .then(() => {
