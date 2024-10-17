@@ -159,6 +159,7 @@ export const promoteTaskController = async (req, res) => {
       const emails = emailarray.flat();
       if (emails.length > 0) {
         transporter.sendMail({
+          from: "tms@tms.com",
           to: emails,
           subject: "A task has been sent for approval",
           text: "Hi user, \n\n a task has been sent for approval. Please log in to the TMS to approve or reject it. \n Best regards, \n TMS team \n \n This is a computer generated email, please do not reply to it.",

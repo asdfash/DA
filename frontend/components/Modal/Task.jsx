@@ -38,7 +38,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
   });
 
   useEffect(() => {
-    if (taskid) {
+    if (popup === "task") {
       axios
         .post("/viewtask", { id: taskid })
         .then(res => {
@@ -60,7 +60,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
           navigate("/login");
         });
     }
-  }, [navigate, notify, taskid]);
+  }, [navigate, popup, notify, taskid]);
 
   const cancelTask = () => setPopup("");
 
