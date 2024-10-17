@@ -15,7 +15,7 @@ app.use(
 );
 
 app.use(express.json()); //Setup express to take in json
-app.use(cookieParser()); //Setup cookie parser
+app.use(cookieParser());
 
 //routing
 app.use(route);
@@ -24,4 +24,3 @@ app.use(route);
 app.listen(port, () => {
   console.log(`API listening on http://localhost:${port}`);
 });
-

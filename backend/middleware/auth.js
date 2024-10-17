@@ -57,7 +57,6 @@ export const CheckGroup = async (username, group) => {
     const [[{ count }]] = await db.execute("select count(*) as count from user_groups where username = ? and groupname = ?", [username, group]);
     return count > 0;
   } catch (error) {
-    
     return "err";
   }
 };

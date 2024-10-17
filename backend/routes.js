@@ -29,11 +29,11 @@ route.post("/checkgroup", async (req, res) => {
 route.post("/checkpermission", validateExistingApp, CheckStatePermission, (req, res) => {
   res.send("ok");
 });
-route.get("/viewapps", ViewAppsController);
-route.post("/viewplans", ViewPlansController);
-route.post("/viewtasks", ViewTasksController);
 route.post("/viewtask", ViewTaskController);
+route.post("/viewtasks", ViewTasksController);
+route.post("/viewplans", ViewPlansController);
 route.post("/viewplanlist", viewPlanListController);
+route.get("/viewapps", ViewAppsController);
 route.post("/addtask", validateTaskName, validateExistingApp, validateExistingPlan, CheckStatePermission, stampTaskNotes, addTaskController);
 route.post(
   "/addplan",
