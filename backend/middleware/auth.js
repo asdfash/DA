@@ -60,19 +60,25 @@ export const CheckGroup = group => async (req, res, next) => {
   }
 };
 
-export const CheckStatePermission = async (req, res, next) => {
-  let state = "create";
-  let app_acronym = req.body.app_acronym;
-  if (req.body.id) {
-    try {
-      const [[{ task_state, task_app_acronym }]] = await db.execute("select task_state, task_app_acronym from task where task_id =?", [req.body.id]);
-      state = task_state;
-      app_acronym = task_app_acronym;
-    } catch (error) {
-      return res.status(500).send("server error, try again later");
+export const CheckTaskStatePermission = async (req, res, next) => {
+  try {
+    const [[{ task_state, task_app_acronym }]] = await db.execute("select task_state, task_app_acronym from task where task_id =?", [req.body.id]);
+    if (req.body.state != task_state) {
+      return res.status(406).send("state error, please try again");
     }
+    const [[{ app_permit_create: create, app_permit_open: open, app_permit_todolist: todo, app_permit_doing: doing, app_permit_done: done }]] = await db.execute("select app_permit_create, app_permit_open, app_permit_todolist, app_permit_doing, app_permit_done from application where app_acronym =?", [task_app_acronym]);
+    const permissions = { open, todo, doing, done };
+    CheckGroup(permissions[task_state])(req, res, next);
+  } catch (error) {
+    return res.status(500).send("server error, try again later");
   }
-  const [[{ app_permit_create: create, app_permit_open: open, app_permit_todolist: todo, app_permit_doing: doing, app_permit_done: done }]] = await db.execute("select app_permit_create, app_permit_open, app_permit_todolist, app_permit_doing, app_permit_done from application where app_acronym =?", [app_acronym]);
-  const permissions = { create, open, todo, doing, done };
-  CheckGroup(permissions[state])(req, res, next);
+};
+
+export const CheckCreatePermission = async (req, res, next) => {
+  try {
+    const [[{ create }]] = await db.execute("select app_permit_create as `create` from application where app_acronym =?", [req.body.app_acronym]);
+    CheckGroup(create)(req, res, next);
+  } catch (error) {
+    return res.status(500).send("server error, try again later");
+  }
 };

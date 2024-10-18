@@ -15,7 +15,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
     name: "",
     app_acronym: "",
     plan: { label: "", value: "" },
-    state: "open",
+    state: "",
     creator: "",
     owner: "",
     createdate: "",
@@ -44,7 +44,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
         .then(res => {
           setTask(res.data);
           axios
-            .post("/checkpermission", { app_acronym: res.data.app_acronym, id: taskid })
+            .post("/checktaskpermission", { app_acronym: res.data.app_acronym, id: taskid, state: res.data.state })
             .then(() => {
               setEdit(true);
               setEditTask({
@@ -66,7 +66,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
 
   const saveTask = () => {
     axios
-      .post("/edittask", { ...editTask, id: task.id, app_acronym: task.app_acronym })
+      .post("/edittask", { ...editTask, id: task.id, state: task.state, app_acronym: task.app_acronym })
       .then(() => {
         notify("task saved", true);
         setPopup("");
@@ -86,7 +86,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
 
   const promoteTask = () => {
     axios
-      .post("/promotetask", { ...editTask, id: task.id, app_acronym: task.app_acronym })
+      .post("/promotetask", { ...editTask, id: task.id, state: task.state, app_acronym: task.app_acronym })
       .then(() => {
         notify("task saved", true);
         setPopup("");
@@ -106,7 +106,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
 
   const demoteTask = () => {
     axios
-      .post("/demotetask", { ...editTask, id: task.id, app_acronym: task.app_acronym })
+      .post("/demotetask", { ...editTask, id: task.id, state: task.state, app_acronym: task.app_acronym })
       .then(() => {
         notify("task saved", true);
         setPopup("");

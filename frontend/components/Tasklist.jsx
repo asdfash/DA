@@ -26,10 +26,9 @@ const Tasklist = ({ notify, selectedApp }) => {
   useEffect(() => {
     if (!selectedApp.acronym) {
       navigate("/");
-    }
-    if (popup === "") {
+    } else if (popup === "") {
       axios
-        .post("/checkpermission", { app_acronym: selectedApp.acronym })
+        .post("/checkcreatetaskpermission", { app_acronym: selectedApp.acronym })
         .then(() => setIsCreate(true))
         .catch(() => setIsCreate(false));
       axios

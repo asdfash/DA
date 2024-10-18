@@ -3,9 +3,9 @@ import db from "../mysql.js";
 // helper functions
 const editAccounts = async (req, username, fields) => {
   req.body.isActive = req.body.isActive ? 1 : 0;
-  const values = fields.map(field => body[field]);
+  const update = fields.map(field => `${field} = '${req.body[field]}'`).join(", ");
   try {
-    await db.execute(`UPDATE accounts SET ${fields.map(field => `${field} = ?`).join(", ")}, isActive = ? WHERE username = ?`, [...values, isActive, username]);
+    await db.execute(`update accounts set ${update} where username =  ? `, [username]);
   } catch (error) {
     return error;
   }

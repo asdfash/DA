@@ -92,7 +92,7 @@ export const ViewTasksController = async (req, res) => {
 export const addTaskController = async (req, res) => {
   try {
     const createdate = new Date().toISOString().slice(0, 10);
-    
+
     const [[{ rnumber }]] = await db.execute("select app_rnumber as rnumber from application where app_acronym =?", [req.body.app_acronym]);
     const connection = await db.getConnection();
     await connection.beginTransaction();
@@ -167,7 +167,9 @@ export const promoteTaskController = async (req, res) => {
         },
         userarray.flat()
       );
-      if (emails.length) {
+
+      if (emails.flat().filter(email => email!=='').length) {
+        console.log(emails);
         await transporter.sendMail({
           from: "tms@tms.com",
           to: emails.flat(),
@@ -191,7 +193,7 @@ export const promoteTaskController = async (req, res) => {
     res.send("task promoted");
 
     if (state === "doing") {
-      await mailer(app_acronym);
+      mailer(app_acronym);
     }
   } catch (error) {
     res.status(500).send("server error, try again later");
@@ -213,8 +215,6 @@ export const demoteTaskController = async (req, res) => {
 };
 
 export const editTaskController = async (req, res) => {
-  // refer to validate notes middleware for stamp
-
   try {
     const [[{ state }]] = await db.execute("select task_state as state from task where task_id =?", [req.body.id]);
     await db.execute(`update task set ${state === "done" || state === "open" ? `task_plan = \'${req.body.plan.value}\' , ` : ""} task_notes = ?, task_owner = ? where task_id =  ? `, [req.body.notes, req.username, req.body.id]);
