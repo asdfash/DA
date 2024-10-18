@@ -16,73 +16,24 @@ route.get("/viewProfile", viewProfileController);
 route.patch("/editEmail", validateEmail, editEmailController);
 route.patch("/editPassword", validatePassword, encrpytPassword, editPasswordController);
 route.get("/viewGroups", viewGroupsController);
-route.post("/checkgroup", async (req, res) => {
-  const isGroup = await CheckGroup(req.username, req.body.group);
-  if (isGroup === "err") {
-    res.status(500).send("server error, try again later");
-  } else if (isGroup) {
-    res.send("ok");
-  } else {
-    res.status(403).send("user not permitted, check with admin");
-  }
-});
-route.post("/checkpermission", validateExistingApp, CheckStatePermission, (req, res) => {
-  res.send("ok");
-});
+route.post("/checkgroup", CheckGroup(), (req, res) => res.send("ok"));
+route.post("/checkpermission", validateExistingApp, CheckStatePermission, (req, res) => res.send("ok"));
 route.post("/viewtask", ViewTaskController);
 route.post("/viewtasks", ViewTasksController);
 route.post("/viewplans", ViewPlansController);
 route.post("/viewplanlist", viewPlanListController);
 route.get("/viewapps", ViewAppsController);
 route.post("/addtask", validateTaskName, validateExistingApp, validateExistingPlan, CheckStatePermission, stampTaskNotes, addTaskController);
-route.post(
-  "/addplan",
-  async (req, res, next) => {
-    const isGroup = await CheckGroup(req.username, "pm");
-    if (isGroup === "err") {
-      res.status(500).send("server error, try again later");
-    } else if (isGroup) {
-      next();
-    } else {
-      return res.status(403).send("user not permitted, check with admin");
-    }
-  },
-  validateCreatePlan,
-  validateExistingApp,
-  AddPlanController
-);
+route.post("/addplan", CheckGroup("pm"), validateCreatePlan, validateExistingApp, AddPlanController);
 
-route.post(
-  "/addapp",
-  async (req, res, next) => {
-    const isGroup = await CheckGroup(req.username, "pl");
-    if (isGroup === "err") {
-      res.status(500).send("server error, try again later");
-    } else if (isGroup) {
-      next();
-    } else {
-      return res.status(403).send("user not permitted, check with admin");
-    }
-  },
-  validateCreateApp,
-  AddAppController
-);
+route.post("/addapp", CheckGroup("pl"), validateCreateApp, AddAppController);
 
 route.post("/promotetask", CheckStatePermission, promoteTaskController);
 route.post("/demotetask", CheckStatePermission, demoteTaskController);
 route.post("/edittask", CheckStatePermission, validateExistingPlan, stampTaskNotes, editTaskController);
 
 //admin
-route.use(async (req, res, next) => {
-  const isGroup = await CheckGroup(req.username, "admin");
-  if (isGroup === "err") {
-    res.status(500).send("server error, try again later");
-  } else if (isGroup) {
-    next();
-  } else {
-    return res.status(403).send("user not permitted, check with admin");
-  }
-});
+route.use(CheckGroup("admin"));
 route.get("/viewUsers", viewUsersController);
 route.post("/addGroup", validateGroupname, AddGroupController);
 route.post("/addUser", validateUsername, validatePassword, encrpytPassword, validateEmail, addUserController);

@@ -14,7 +14,7 @@ const App = ({ selectedApp, popup, setPopup }) => {
     if (popup == "app") {
       axios.get("/verify").catch(() => navigate("/login"));
     }
-  }, [navigate, popup, selectedApp.acronym]);
+  }, [navigate, popup, selectedApp, selectedApp.acronym]);
   return (
     <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "app"} onRequestClose={closeApp}>
       <main className="main">
@@ -38,19 +38,19 @@ const App = ({ selectedApp, popup, setPopup }) => {
                 </p>
                 <h4>Task Permissions:</h4>
                 <p>
-                  <strong> Create: </strong> {selectedApp.taskcreate.value}
+                  <strong> Create: </strong> {selectedApp.taskcreate ? selectedApp.taskcreate.value : ""}
                 </p>
                 <p>
-                  <strong> Open: </strong> {selectedApp.taskopen.value}
+                  <strong> Open: </strong> {selectedApp.taskopen ? selectedApp.taskopen.value : ""}
                 </p>
                 <p>
-                  <strong> Todo: </strong> {selectedApp.tasktodo.value}
+                  <strong> Todo: </strong> {selectedApp.tasktodo ? selectedApp.tasktodo.value : ""}
                 </p>
                 <p>
-                  <strong> Doing: </strong> {selectedApp.taskdoing.value}
+                  <strong> Doing: </strong> {selectedApp.taskdoing ? selectedApp.taskdoing.value : ""}
                 </p>
                 <p>
-                  <strong> Done: </strong> {selectedApp.taskdone.value}
+                  <strong> Done: </strong> {selectedApp.taskdone ? selectedApp.taskdone.value : ""}
                 </p>
               </td>
               <td>

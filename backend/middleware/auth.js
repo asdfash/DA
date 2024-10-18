@@ -47,17 +47,16 @@ export const CheckLogin = async (req, res, next) => {
   next();
 };
 
-// helper function, check routes for acutal use
-// returns true/false/'err'
-export const CheckGroup = async (username, group) => {
-  if (!group) {
-    return false;
+export const CheckGroup = group => async (req, res, next) => {
+  const groupName = group || req.body.group;
+  if (!groupName) {
+    return res.status(403).send("user not permitted, check with admin");
   }
   try {
-    const [[{ count }]] = await db.execute("select count(*) as count from user_groups where username = ? and groupname = ?", [username, group]);
-    return count > 0;
+    const [[{ count }]] = await db.execute("select count(*) as count from user_groups where username = ? and groupname = ?", [req.username, groupName]);
+    return count > 0 ? next() : res.status(403).send("user not permitted, check with admin");
   } catch (error) {
-    return "err";
+    return res.status(500).send("server error, try again later");
   }
 };
 
@@ -73,15 +72,7 @@ export const CheckStatePermission = async (req, res, next) => {
       return res.status(500).send("server error, try again later");
     }
   }
-
   const [[{ app_permit_create: create, app_permit_open: open, app_permit_todolist: todo, app_permit_doing: doing, app_permit_done: done }]] = await db.execute("select app_permit_create, app_permit_open, app_permit_todolist, app_permit_doing, app_permit_done from application where app_acronym =?", [app_acronym]);
   const permissions = { create, open, todo, doing, done };
-
-  const canPromote = await CheckGroup(req.username, permissions[state]);
-  if (canPromote === "err") {
-    return res.status(500).send("server error, try again later");
-  } else if (!canPromote) {
-    return res.status(403).send("user not permitted");
-  }
-  next();
+  CheckGroup(permissions[state]);
 };
