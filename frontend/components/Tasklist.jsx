@@ -9,7 +9,7 @@ import App from "./Modal/App";
 import Task from "./Modal/Task";
 import CreateTask from "./Modal/CreateTask";
 
-const Tasklist = ({ notify, app_acronym }) => {
+const Tasklist = ({ notify, selectedApp }) => {
   const headers = ["open", "todo", "doing", "done", "closed"];
   const [popup, setPopup] = useState("");
   const [tasks, setTasks] = useState({
@@ -24,16 +24,16 @@ const Tasklist = ({ notify, app_acronym }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!app_acronym) {
+    if (!selectedApp.acronym) {
       navigate("/");
     }
     if (popup === "") {
       axios
-        .post("/checkpermission", { app_acronym: app_acronym })
+        .post("/checkpermission", { app_acronym: selectedApp.acronym })
         .then(() => setIsCreate(true))
         .catch(() => setIsCreate(false));
       axios
-        .post("/viewtasks", { app_acronym: app_acronym })
+        .post("/viewtasks", { app_acronym: selectedApp.acronym })
         .then(res => setTasks(res.data))
         .catch(err => {
           switch (err.response.status) {
@@ -48,17 +48,17 @@ const Tasklist = ({ notify, app_acronym }) => {
           }
         });
     }
-  }, [navigate, notify, popup, app_acronym]);
+  }, [navigate, notify, popup, selectedApp]);
 
   return (
     <main className="main">
-      <Planlist notify={notify} app_acronym={app_acronym} popup={popup} setPopup={setPopup} />
-      <App notify={notify} app_acronym={app_acronym} popup={popup} setPopup={setPopup} />
+      <Planlist notify={notify} app_acronym={selectedApp.acronym} popup={popup} setPopup={setPopup} />
+      <App selectedApp={selectedApp} popup={popup} setPopup={setPopup} />
       <Task notify={notify} taskid={selectedtaskid} popup={popup} setPopup={setPopup} />
-      <CreateTask notify={notify} app_acronym={app_acronym} popup={popup} setPopup={setPopup} />
+      <CreateTask notify={notify} app_acronym={selectedApp.acronym} popup={popup} setPopup={setPopup} />
       <div className="split">
         <div>
-          <strong>{app_acronym}</strong> | <button onClick={() => setPopup("app")}> details</button>
+          <strong>{selectedApp.acronym}</strong> | <button onClick={() => setPopup("app")}> details</button>
         </div>
         <div>
           <button onClick={() => setPopup("planlist")}>Plans</button> {isCreate ? <button onClick={() => setPopup("createtask")}>Create Task</button> : ""}

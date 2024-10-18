@@ -24,7 +24,7 @@ axios.defaults.baseURL = "http://localhost:5000";
 
 const App = () => {
   const [notification, setNotification] = useState({ msg: "", duration: 1500, success: true });
-  const [app_acronym, setapp_acronym] = useState("");
+  const [selectedApp, setSelectedApp] = useState({});
   const notify = (msg, success) => {
     setNotification({ ...notification, msg: "" });
     setNotification({ ...notification, msg: msg, success: success });
@@ -39,10 +39,10 @@ const App = () => {
       {notification.msg ? <Notification message={notification.msg} duration={1500} success={notification.success} onClose={handleCloseNotification} /> : <></>}
       <Header notify={notify} />
       <Routes>
-        <Route path="/" element={<Applist notify={notify} setapp_acronym={setapp_acronym} />} />
-        <Route path="/tms" element={<Applist notify={notify} setapp_acronym={setapp_acronym} />} />
+        <Route path="/" element={<Applist notify={notify} setSelectedApp={setSelectedApp} />} />
+        <Route path="/tms" element={<Applist notify={notify} setSelectedApp={setSelectedApp} />} />
         <Route path="/profile" element={<Profile notify={notify} />} />
-        <Route path="/app" element={<Tasklist notify={notify} app_acronym={app_acronym} />} />
+        <Route path="/app" element={<Tasklist notify={notify} selectedApp={selectedApp} />} />
         <Route path="/UMS" element={<UMS notify={notify} />} />
         <Route path="/login" element={<Login notify={notify} />} />
         <Route path="*" element={<NotFound />} />

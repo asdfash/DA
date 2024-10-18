@@ -63,6 +63,7 @@ export const AddPlanController = async (req, res) => {
   }
 };
 
+//Tasklist
 export const ViewTasksController = async (req, res) => {
   try {
     const [tasksarray] = await db.execute("select * from task where task_app_acronym = ?", [req.body.app_acronym]);
@@ -90,36 +91,6 @@ export const ViewTasksController = async (req, res) => {
   }
 };
 
-export const ViewTaskController = async (req, res) => {
-  try {
-    const [[task]] = await db.execute("select * from task where task_id = ?", [req.body.id]);
-
-    res.json({
-      id: task.task_id,
-      name: task.task_name,
-      description: task.task_description,
-      plan: { value: task.task_plan, label: task.task_plan },
-      notes: task.task_notes,
-      app_acronym: task.task_app_acronym,
-      state: task.task_state,
-      owner: task.task_owner,
-      creator: task.task_creator,
-      createdate: task.task_createdate,
-    });
-  } catch (error) {
-    res.status(500).send("server error, try again later");
-  }
-};
-
-export const viewPlanListController = async (req, res) => {
-  try {
-    const [planarray] = await db.execute({ sql: `select distinct plan_mvp_name from plan where plan_app_acronym = ?`, rowsAsArray: true }, [req.body.app_acronym]);
-    const plans = planarray.flat().map(plan => ({ value: plan, label: plan }));
-    res.json(plans);
-  } catch (error) {
-    res.status(500).send("server error, try again later");
-  }
-};
 
 export const addTaskController = async (req, res) => {
   try {
@@ -138,6 +109,39 @@ export const addTaskController = async (req, res) => {
     } finally {
       return connection.release();
     }
+  } catch (error) {
+    res.status(500).send("server error, try again later");
+  }
+};
+
+//plan popup
+export const viewPlanListController = async (req, res) => {
+  try {
+    const [planarray] = await db.execute({ sql: `select distinct plan_mvp_name from plan where plan_app_acronym = ?`, rowsAsArray: true }, [req.body.app_acronym]);
+    const plans = planarray.flat().map(plan => ({ value: plan, label: plan }));
+    res.json(plans);
+  } catch (error) {
+    res.status(500).send("server error, try again later");
+  }
+};
+
+//Task popup
+export const ViewTaskController = async (req, res) => {
+  try {
+    const [[task]] = await db.execute("select * from task where task_id = ?", [req.body.id]);
+
+    res.json({
+      id: task.task_id,
+      name: task.task_name,
+      description: task.task_description,
+      plan: { value: task.task_plan, label: task.task_plan },
+      notes: task.task_notes,
+      app_acronym: task.task_app_acronym,
+      state: task.task_state,
+      owner: task.task_owner,
+      creator: task.task_creator,
+      createdate: task.task_createdate,
+    });
   } catch (error) {
     res.status(500).send("server error, try again later");
   }
@@ -208,3 +212,5 @@ export const editTaskController = async (req, res) => {
     res.status(500).send("server error, try again later");
   }
 };
+
+
