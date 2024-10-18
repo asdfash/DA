@@ -86,25 +86,10 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
 
   const promoteTask = () => {
     axios
-      .post("/edittask", { ...editTask, id: task.id, app_acronym: task.app_acronym })
+      .post("/promotetask", { ...editTask, id: task.id, app_acronym: task.app_acronym })
       .then(() => {
-        axios
-          .post("/promotetask", { id: task.id })
-          .then(() => {
-            notify("task saved", true);
-            setPopup("");
-          })
-          .catch(err => {
-            notify(err.response.data, false);
-            switch (err.response.status) {
-              case 401:
-                navigate("/login");
-                break;
-              case 403:
-                navigate("/");
-                break;
-            }
-          });
+        notify("task saved", true);
+        setPopup("");
       })
       .catch(err => {
         notify(err.response.data, false);
@@ -121,25 +106,10 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
 
   const demoteTask = () => {
     axios
-      .post("/edittask", { ...editTask, id: task.id, app_acronym: task.app_acronym })
+      .post("/demotetask", { ...editTask, id: task.id, app_acronym: task.app_acronym })
       .then(() => {
-        axios
-          .post("/demotetask", { id: task.id })
-          .then(() => {
-            notify("task saved", true);
-            setPopup("");
-          })
-          .catch(err => {
-            notify(err.response.data, false);
-            switch (err.response.status) {
-              case 401:
-                navigate("/login");
-                break;
-              case 403:
-                navigate("/");
-                break;
-            }
-          });
+        notify("task saved", true);
+        setPopup("");
       })
       .catch(err => {
         notify(err.response.data, false);

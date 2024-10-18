@@ -150,8 +150,7 @@ export const validateCreatePlan = async (req, res, next) => {
 export const validateExistingApp = async (req, res, next) => {
   try {
     const [apparray] = await db.execute({ sql: `select distinct app_acronym from application`, rowsAsArray: true });
-    const apps = apparray.flat();
-    if (!apps.includes(req.body.app_acronym)) {
+    if (!apparray.flat().includes(req.body.app_acronym)) {
       return res.status(406).send("Invalid App Acronym");
     }
   } catch (error) {
@@ -166,8 +165,7 @@ export const validateExistingPlan = async (req, res, next) => {
   }
   try {
     const [planarray] = await db.execute({ sql: `select distinct plan_mvp_name from plan where plan_app_acronym = ?`, rowsAsArray: true }, [req.body.app_acronym]);
-    const plans = planarray.flat();
-    if (req.body.plan.value && !plans.includes(req.body.plan.value)) {
+    if (req.body.plan.value && !planarray.flat().includes(req.body.plan.value)) {
       return res.status(406).send("Invalid plan");
     }
   } catch (error) {

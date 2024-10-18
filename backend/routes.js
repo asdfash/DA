@@ -28,8 +28,8 @@ route.post("/addplan", CheckGroup("pm"), validateCreatePlan, validateExistingApp
 
 route.post("/addapp", CheckGroup("pl"), validateCreateApp, AddAppController);
 
-route.post("/promotetask", CheckStatePermission, promoteTaskController);
-route.post("/demotetask", CheckStatePermission, demoteTaskController);
+route.post("/promotetask", CheckStatePermission, validateExistingPlan, stampTaskNotes, promoteTaskController);
+route.post("/demotetask", CheckStatePermission, validateExistingPlan, stampTaskNotes, demoteTaskController);
 route.post("/edittask", CheckStatePermission, validateExistingPlan, stampTaskNotes, editTaskController);
 
 //admin

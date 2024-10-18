@@ -74,5 +74,5 @@ export const CheckStatePermission = async (req, res, next) => {
   }
   const [[{ app_permit_create: create, app_permit_open: open, app_permit_todolist: todo, app_permit_doing: doing, app_permit_done: done }]] = await db.execute("select app_permit_create, app_permit_open, app_permit_todolist, app_permit_doing, app_permit_done from application where app_acronym =?", [app_acronym]);
   const permissions = { create, open, todo, doing, done };
-  CheckGroup(permissions[state]);
+  CheckGroup(permissions[state])(req, res, next);
 };
