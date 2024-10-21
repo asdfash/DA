@@ -13,12 +13,10 @@ const Profile = ({ notify }) => {
 
   //update
   const update = () => {
-    axios
-      .get("/viewProfile")
-      .then(res => {
-        setUsername(res.data.username);
-        setEmail(res.data.email);
-      })
+    axios.get("/viewProfile").then(res => {
+      setUsername(res.data.username);
+      setEmail(res.data.email);
+    });
   };
 
   useEffect(update, []);

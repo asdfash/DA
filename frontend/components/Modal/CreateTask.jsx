@@ -100,7 +100,7 @@ const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
               <td style={{ textAlign: "left", paddingLeft: "1rem" }}>
                 <div>
                   <strong> Notes: </strong>
-                  <textarea rows={15} style={{ width: "100%" }}  disabled></textarea>
+                  <textarea rows={15} style={{ width: "100%" }} disabled></textarea>
                 </div>
                 <p>
                   <strong> Add Notes: </strong>

@@ -177,7 +177,7 @@ const UMS = ({ notify }) => {
           {/* create user */}
           <tr>
             <td>
-              <input type="text" autoFocus value={createUser.username} onChange={e => setCreateUser({ ...createUser, username: e.target.value }) } />
+              <input type="text" autoFocus value={createUser.username} onChange={e => setCreateUser({ ...createUser, username: e.target.value })} />
             </td>
             <td>
               <input type="password" value={createUser.password} onChange={e => setCreateUser({ ...createUser, password: e.target.value })} />

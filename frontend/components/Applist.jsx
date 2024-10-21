@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Applist = ({ notify, setSelectedApp }) => {
+const Applist = ({ notify, setAppAcronym }) => {
   const [updateBool, updateInfo] = useState(false);
   const [isPL, setIsPL] = useState();
   const headers = ["Acronym", "Running Number", "Start Date", "End Date", "Task Create", "Task Open", "Task To Do", "Task Doing", "Task Done", "Description"];
@@ -24,7 +24,7 @@ const Applist = ({ notify, setSelectedApp }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setSelectedApp({});
+    setAppAcronym("");
     axios
       .post("/checkgroup", { group: "pl" })
       .then(() => setIsPL(true))
@@ -58,7 +58,7 @@ const Applist = ({ notify, setSelectedApp }) => {
             break;
         }
       });
-  }, [updateBool, navigate, setSelectedApp]);
+  }, [updateBool, navigate, setAppAcronym]);
 
   const handleCreate = e => {
     e.preventDefault();
@@ -94,8 +94,8 @@ const Applist = ({ notify, setSelectedApp }) => {
       });
   };
 
-  const handleView = app => {
-    setSelectedApp(app);
+  const handleViewTasks = app_acronym => {
+    setAppAcronym(app_acronym);
     navigate("/app");
   };
 
@@ -173,6 +173,7 @@ const Applist = ({ notify, setSelectedApp }) => {
               <td>
                 <textarea rows={5} cols={51} maxLength={255} value={createApp.description} onChange={e => setCreateApp({ ...createApp, description: e.target.value })}></textarea>
               </td>
+              {/* <td></td> */}
               <td>
                 <button onClick={handleCreate}>Create</button>
               </td>
@@ -195,9 +196,9 @@ const Applist = ({ notify, setSelectedApp }) => {
               <td>{app.tasktodo.value}</td>
               <td>{app.taskdoing.value}</td>
               <td>{app.taskdone.value}</td>
-              <td>{app.description.length <= 50 ? app.description : app.description.slice(0, 50) + "..."}</td>
+              <textarea style={{ resize: "vertical" }} rows={4} cols={51} value={app.description} disabled />
               <td>
-                <button onClick={() => handleView(app)}>Open</button>
+                <button onClick={() => handleViewTasks(app.acronym)}>Open</button>
               </td>
             </tr>
           ))}
