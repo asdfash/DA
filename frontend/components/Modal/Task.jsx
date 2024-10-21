@@ -171,16 +171,16 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
                 </p>
                 <p>
                   <strong> Description: </strong>
-                  {task.description}
+                  <textarea  rows={20}  value={task.description} disabled/>
                 </p>
               </td>
               <td style={{ textAlign: "left", paddingLeft: "1rem" }}>
                 <strong> Notes: </strong>
-                <textarea rows={25} style={{ width: "100%" }} value={task.notes} disabled></textarea>
+                <textarea rows={25} value={task.notes} disabled />
                 {edit ? (
                   <p>
                     <strong> Add Notes: </strong>
-                    <textarea rows={15} style={{ width: "100%" }} value={editTask.notes} onChange={e => setEditTask({ ...editTask, notes: e.target.value })}></textarea>
+                    <textarea rows={15} value={editTask.notes} onChange={e => setEditTask({ ...editTask, notes: e.target.value })}/>
                   </p>
                 ) : (
                   <></>

@@ -79,6 +79,7 @@ export const CheckCreatePermission = async (req, res, next) => {
     const [[{ create }]] = await db.execute("select app_permit_create as `create` from application where app_acronym =?", [req.body.app_acronym]);
     CheckGroup(create)(req, res, next);
   } catch (error) {
+    console.log(error);
     return res.status(500).send("server error, try again later");
   }
 };

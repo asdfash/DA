@@ -94,17 +94,17 @@ const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
 
                 <p>
                   <strong style={{ verticalAlign: "top" }}> Description: </strong>
-                  <textarea rows={15} style={{ width: "100%" }} value={task.description} onChange={e => setTask({ ...task, description: e.target.value })}></textarea>
+                  <textarea maxLength={255} rows={15} value={task.description} onChange={e => setTask({ ...task, description: e.target.value })}/>
                 </p>
               </td>
               <td style={{ textAlign: "left", paddingLeft: "1rem" }}>
                 <div>
                   <strong> Notes: </strong>
-                  <textarea rows={15} style={{ width: "100%" }} disabled></textarea>
+                  <textarea rows={15} disabled/>
                 </div>
                 <p>
                   <strong> Add Notes: </strong>
-                  <textarea rows={25} style={{ width: "100%" }} value={task.notes} onChange={e => setTask({ ...task, notes: e.target.value })}></textarea>
+                  <textarea rows={25} value={task.notes} onChange={e => setTask({ ...task, notes: e.target.value })}/>
                 </p>
               </td>
             </tr>

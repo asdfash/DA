@@ -102,12 +102,14 @@ export const addTaskController = async (req, res) => {
       await connection.commit();
       return res.send("task created");
     } catch (error) {
+      console.log(error);
       await connection.rollback();
       return res.status(500).send("server error, try again later");
     } finally {
       connection.release();
     }
   } catch (error) {
+    console.log(error);
     res.status(500).send("server error, try again later");
   }
 };

@@ -171,7 +171,7 @@ const Applist = ({ notify, setAppAcronym }) => {
                 />
               </td>
               <td>
-                <textarea rows={5} cols={51} maxLength={255} value={createApp.description} onChange={e => setCreateApp({ ...createApp, description: e.target.value })}></textarea>
+                <textarea rows={5} cols={51} maxLength={255} value={createApp.description} onChange={e => setCreateApp({ ...createApp, description: e.target.value })}/>
               </td>
               {/* <td></td> */}
               <td>

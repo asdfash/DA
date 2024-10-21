@@ -24,6 +24,7 @@ a {
 
 textarea {
   resize: none;
+  width: 100%;
 }
 
 .date {
