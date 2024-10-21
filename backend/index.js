@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import route from "./routes.js";
 
 const app = express();
-const port = process.env.BACKENDPORT || 3000;
+const port = process.env.BACKENDPORT || 5000;
 
 //setup CORS - accessible by frontend only
 app.use(
