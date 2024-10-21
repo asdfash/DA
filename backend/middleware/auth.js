@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import db from "../mysql.js";
+import db from "../utils/mysql.js";
 
 export const Login = async (req, res, next) => {
   const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username]);

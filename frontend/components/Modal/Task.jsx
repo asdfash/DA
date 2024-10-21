@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import Modal from "react-modal";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
@@ -37,8 +37,8 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
     notes: "",
   });
 
-  useEffect(() => {
-    if (popup === "task") {
+  const update = () => {
+    if (taskid) {
       axios
         .post("/viewtask", { id: taskid })
         .then(res => {
@@ -60,7 +60,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
           navigate("/login");
         });
     }
-  }, [navigate, popup, notify, taskid]);
+  };
 
   const cancelTask = () => setPopup("");
 
@@ -69,7 +69,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
       .post("/edittask", { ...editTask, id: task.id, state: task.state, app_acronym: task.app_acronym })
       .then(() => {
         notify("task saved", true);
-        setPopup("");
+        update();
       })
       .catch(err => {
         notify(err.response.data, false);
@@ -125,7 +125,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
   };
 
   return (
-    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "task"} onRequestClose={cancelTask}>
+    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "task"} onAfterOpen={update} onRequestClose={cancelTask}>
       <main className="main">
         <button className="close" onClick={cancelTask}>
           X

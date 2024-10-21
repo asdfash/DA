@@ -1,5 +1,5 @@
-import db from "../mysql.js";
-import transporter from "../mail.js";
+import db from "../utils/mysql.js";
+import transporter from "../utils/mail.js";
 
 //applist
 export const ViewAppsController = async (req, res) => {
@@ -168,7 +168,7 @@ export const promoteTaskController = async (req, res) => {
         userarray.flat()
       );
 
-      if (emails.flat().filter(email => email!=='').length) {
+      if (emails.flat().filter(email => email !== "").length) {
         console.log(emails);
         await transporter.sendMail({
           from: "tms@tms.com",

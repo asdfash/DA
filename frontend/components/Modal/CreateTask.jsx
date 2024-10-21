@@ -32,7 +32,7 @@ const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
       .post("/addtask", task)
       .then(() => {
         notify("Task created", true);
-        setPopup("");
+        setTask({ name: "", app_acronym: app_acronym, plan: {}, description: "", notes: "" });
       })
       .catch(err => {
         switch (err.response.status) {

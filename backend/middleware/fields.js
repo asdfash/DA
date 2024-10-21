@@ -1,4 +1,4 @@
-import db from "../mysql.js";
+import db from "../utils/mysql.js";
 
 export const validateUsername = async (req, res, next) => {
   const regex = /^[a-zA-Z0-9]+$/;
@@ -68,15 +68,15 @@ export const validateAdmin = (req, res, next) => {
 
 export const validateCreateApp = async (req, res, next) => {
   //app_acronym
-  const acronymregex = /^[a-zA-Z0-9_]+$/;
+  const acronymregex = /^[a-zA-Z0-9]+$/;
   if (!acronymregex.test(req.body.acronym)) {
-    return res.status(406).send("Invalid acronym");
+    return res.status(406).send("Invalid app acronym");
   }
   try {
     const [[{ count }]] = await db.execute("select count(*) as count from application where app_acronym = ?", [req.body.acronym]);
 
     if (count > 0) {
-      return res.status(406).send("acronym already taken");
+      return res.status(406).send("app acronym already taken");
     }
   } catch (error) {
     return res.status(500).send("server error, try again later");
@@ -118,7 +118,7 @@ export const validateCreateApp = async (req, res, next) => {
 };
 
 export const validateCreatePlan = async (req, res, next) => {
-  const regex = /^[a-zA-Z0-9_]+$/;
+  const regex = /^[a-zA-Z0-9]+$/;
   if (!regex.test(req.body.mvpname)) {
     return res.status(406).send("Invalid plan MVP name");
   }

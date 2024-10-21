@@ -1,4 +1,4 @@
-import db from "../mysql.js";
+import db from "../utils/mysql.js";
 
 // helper functions
 const editAccounts = async (req, username, fields) => {

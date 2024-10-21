@@ -6,7 +6,7 @@ import Select from "react-select";
 
 const UMS = ({ notify }) => {
   const headers = ["username", "password", "email", "group", "isActive", "create/edit"];
-  const [updateBool, updateInfo] = useState(false);
+
   const [newGroup, setNewGroup] = useState("");
   const [groups, setGroups] = useState([]);
   const [createUser, setCreateUser] = useState({
@@ -21,7 +21,7 @@ const UMS = ({ notify }) => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const update = () => {
     //groups
     axios
       .get("/viewGroups")
@@ -52,7 +52,8 @@ const UMS = ({ notify }) => {
             break;
         }
       });
-  }, [updateBool, navigate]);
+  };
+  useEffect(update, [navigate]);
 
   const handleNewGroup = e => {
     e.preventDefault();
@@ -63,7 +64,7 @@ const UMS = ({ notify }) => {
       .then(() => {
         setNewGroup("");
         notify("group created", true);
-        updateInfo(!updateBool);
+        update();
       })
       .catch(err => {
         switch (err.response.status) {
@@ -75,7 +76,7 @@ const UMS = ({ notify }) => {
             break;
           default:
             notify(err.response.data, false);
-            updateInfo(!updateBool);
+            update();
         }
       });
   };
@@ -100,7 +101,7 @@ const UMS = ({ notify }) => {
           isActive: true,
         });
         notify("user created", true);
-        updateInfo(!updateBool);
+        update();
       })
       .catch(err => {
         switch (err.response.status) {
@@ -112,13 +113,13 @@ const UMS = ({ notify }) => {
             break;
           default:
             notify(err.response.data, false);
-            updateInfo(!updateBool);
+            update();
         }
       });
   };
 
   const handleEdit = user => {
-    updateInfo(!updateBool);
+    update();
     setEditUser(user);
   };
 
@@ -135,7 +136,7 @@ const UMS = ({ notify }) => {
       .then(() => {
         setEditUser({});
         notify("user saved", true);
-        updateInfo(!updateBool);
+        update();
       })
       .catch(err => {
         switch (err.response.status) {
@@ -154,7 +155,7 @@ const UMS = ({ notify }) => {
   const handleCancel = e => {
     e.preventDefault();
     setEditUser({});
-    updateInfo(!updateBool);
+    update();
   };
 
   return (
@@ -176,7 +177,7 @@ const UMS = ({ notify }) => {
           {/* create user */}
           <tr>
             <td>
-              <input type="text" value={createUser.username} onChange={e => setCreateUser({ ...createUser, username: e.target.value })} />
+              <input type="text" autoFocus value={createUser.username} onChange={e => setCreateUser({ ...createUser, username: e.target.value }) } />
             </td>
             <td>
               <input type="password" value={createUser.password} onChange={e => setCreateUser({ ...createUser, password: e.target.value })} />
