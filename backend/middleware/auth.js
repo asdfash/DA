@@ -67,7 +67,7 @@ export const CheckTaskStatePermission = async (req, res, next) => {
       return res.status(406).send("state error, please try again");
     }
     const [[{ app_permit_create: create, app_permit_open: open, app_permit_todolist: todo, app_permit_doing: doing, app_permit_done: done }]] = await db.execute("select app_permit_create, app_permit_open, app_permit_todolist, app_permit_doing, app_permit_done from application where app_acronym =?", [task_app_acronym]);
-    const permissions = { open, todo, doing, done };
+    const permissions = { create, open, todo, doing, done };
     CheckGroup(permissions[task_state])(req, res, next);
   } catch (error) {
     return res.status(500).send("server error, try again later");
@@ -79,7 +79,6 @@ export const CheckCreatePermission = async (req, res, next) => {
     const [[{ create }]] = await db.execute("select app_permit_create as `create` from application where app_acronym =?", [req.body.app_acronym]);
     CheckGroup(create)(req, res, next);
   } catch (error) {
-    console.log(error);
     return res.status(500).send("server error, try again later");
   }
 };

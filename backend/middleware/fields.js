@@ -158,7 +158,6 @@ export const validateExistingApp = async (req, res, next) => {
       return res.status(406).send("Invalid App Acronym");
     }
   } catch (error) {
-    console.log(error);
     return res.status(500).send("server error, try again later");
   }
   next();
@@ -174,7 +173,6 @@ export const validateExistingPlan = async (req, res, next) => {
       return res.status(406).send("Invalid plan");
     }
   } catch (error) {
-    console.log(error);
     return res.status(500).send("server error, try again later");
   }
   next();
@@ -201,7 +199,6 @@ export const stampTaskNotes = async (req, res, next) => {
 
     req.body.notes = req.body.notes ? `[${req.username}, ${state}, ${timestamp}(UTC)]\n\n${req.body.notes}\n\n*************\n${notes}\n\n` : notes;
   } catch (error) {
-    console.log(error);
     return res.status(500).send("server error, try again later");
   }
   next();

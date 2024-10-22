@@ -24,6 +24,12 @@ task name alphanumeric, max 50 char
 valid plan or ""
 description max 255 char
 
+view applist:
+login
+
+view planlist:
+login
+valid app acronym
 
 view tasklist:
 login

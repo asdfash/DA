@@ -20,12 +20,12 @@ route.post("/checkgroup", CheckGroup(), (req, res) => res.send("ok"));
 route.post("/checktaskpermission", validateExistingApp, CheckTaskStatePermission, (req, res) => res.send("ok"));
 route.post("/checkcreatetaskpermission", validateExistingApp, CheckCreatePermission, (req, res) => res.send("ok"));
 route.post("/viewtask", ViewTaskController);
-route.post("/viewtasks", ViewTasksController);
-route.post("/viewplans", ViewPlansController);
+route.post("/viewtasks", validateExistingApp, ViewTasksController);
+route.post("/viewplans", validateExistingApp, ViewPlansController);
 route.post("/viewplanlist", viewPlanListController);
 route.get("/viewapps", ViewAppsController);
-route.post("/addtask", validateTaskName, validateExistingApp, validateExistingPlan, CheckCreatePermission, stampTaskNotes, addTaskController);
-route.post("/addplan", CheckGroup("pm"), validateCreatePlan, validateExistingApp, AddPlanController);
+route.post("/addtask", validateExistingApp, validateExistingPlan, validateTaskName, CheckCreatePermission, stampTaskNotes, addTaskController);
+route.post("/addplan", CheckGroup("pm"), validateExistingApp, validateCreatePlan, AddPlanController);
 
 route.post("/addapp", CheckGroup("pl"), validateCreateApp, AddAppController);
 
