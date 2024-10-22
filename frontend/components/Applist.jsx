@@ -115,14 +115,14 @@ const Applist = ({ notify, setAppAcronym }) => {
           {isPL ? (
             <tr>
               <td>
-                <input type="text" size={10} maxLength={50} value={createApp.acronym} onChange={e => setCreateApp({ ...createApp, acronym: e.target.value })} />
+                <input type="text" size={10} maxLength={50} value={createApp.acronym} onChange={e => setCreateApp({ ...createApp, acronym: e.target.value })} autoFocus />
               </td>
               <td>0</td>
               <td>
-                <input className="date" type="date" value={createApp.startdate} onChange={e => setCreateApp({ ...createApp, startdate: e.target.value })}/>
+                <input className="date" type="date" value={createApp.startdate} onChange={e => setCreateApp({ ...createApp, startdate: e.target.value })} />
               </td>
               <td>
-                <input className="date" type="date" value={createApp.enddate} onChange={e => setCreateApp({ ...createApp, enddate: e.target.value })}/>
+                <input className="date" type="date" value={createApp.enddate} onChange={e => setCreateApp({ ...createApp, enddate: e.target.value })} />
               </td>
 
               <td>
@@ -171,7 +171,7 @@ const Applist = ({ notify, setAppAcronym }) => {
                 />
               </td>
               <td>
-                <textarea rows={5} cols={51} maxLength={255} value={createApp.description} onChange={e => setCreateApp({ ...createApp, description: e.target.value })}/>
+                <textarea rows={5} cols={51} maxLength={255} value={createApp.description} onChange={e => setCreateApp({ ...createApp, description: e.target.value })} />
               </td>
               {/* <td></td> */}
               <td>
@@ -186,10 +186,10 @@ const Applist = ({ notify, setAppAcronym }) => {
               <td>{app.acronym}</td>
               <td>{app.rnumber}</td>
               <td>
-                <input className="date" type="date" value={app.startdate} disabled/>
+                <input className="date" type="date" value={app.startdate} disabled />
               </td>
               <td>
-                <input className="date" type="date" value={app.enddate} disabled/>
+                <input className="date" type="date" value={app.enddate} disabled />
               </td>
               <td>{app.taskcreate.value}</td>
               <td>{app.taskopen.value}</td>

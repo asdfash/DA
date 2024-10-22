@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Profile = ({ notify }) => {
   const [username, setUsername] = useState("");
@@ -67,16 +67,12 @@ const Profile = ({ notify }) => {
         </p>
       </div>
       <form onSubmit={handleEmailChange}>
-        <div>
-          <input type="text" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="Enter new email" />
-          <button type="submit">Change Email</button>
-        </div>
+        <input type="text" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="Enter new email" />
+        <button type="submit">Change Email</button>
       </form>
       <form onSubmit={handlePasswordChange}>
-        <div>
-          <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Enter new password" />
-          <button type="submit">Change Password</button>
-        </div>
+        <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Enter new password" />
+        <button type="submit">Change Password</button>
       </form>
     </main>
   );

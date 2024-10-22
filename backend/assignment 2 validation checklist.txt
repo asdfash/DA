@@ -1,0 +1,65 @@
+create app:
+login
+group is pl
+all fields in
+acronym unique & alphanumeric, max 50 char
+start end date are dates 
+task permissions are groups 
+description max length 255
+
+create plan:
+login
+valid app acronym
+group is pm
+all fields in
+plan name unique to app , alphanumeric , max 50 char
+start date end date are date
+colour valid colour
+
+create task:
+login
+valid app acronym
+group is in app create
+task name alphanumeric, max 50 char
+valid plan or ""
+description max 255 char
+
+
+view tasklist:
+login
+valid app acronym
+
+view task:
+login
+valid task id
+
+
+edit task:
+login
+valid task id
+group is in app [state] permission
+valid plan or ""
+stamp note
+if state = open/done, add plan
+
+
+
+promote:
+login
+valid task id
+valid task state
+group is in app [state] permission
+valid plan or ""
+stamp note
+if state = open/done, add plan
+
+
+
+demote:
+login
+valid task id
+valid task state
+group is in app [state] permission
+valid plan or ""
+stamp note
+if state = open/done, add plan

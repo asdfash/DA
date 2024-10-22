@@ -1,7 +1,7 @@
 import db from "../utils/mysql.js";
 
 export const validateUsername = async (req, res, next) => {
-  const regex = /^[a-zA-Z0-9]+$/;
+  const regex = /^[a-zA-Z0-9]{1,50}$/;
   if (!req.body.username || !regex.test(req.body.username)) {
     return res.status(406).send("invalid username");
   }
@@ -40,7 +40,7 @@ export const validatePassword = (req, res, next) => {
 };
 
 export const validateGroupname = async (req, res, next) => {
-  const regex = /^[a-zA-Z0-9_]+$/;
+  const regex = /^[a-zA-Z0-9_]{1,50}$/;
   if (!regex.test(req.body.group)) {
     return res.status(406).send("invalid group name");
   }
@@ -68,7 +68,7 @@ export const validateAdmin = (req, res, next) => {
 
 export const validateCreateApp = async (req, res, next) => {
   //app_acronym
-  const acronymregex = /^[a-zA-Z0-9]+$/;
+  const acronymregex = /^[a-zA-Z0-9]{1,50}$/;
   if (!acronymregex.test(req.body.acronym)) {
     return res.status(406).send("Invalid app acronym");
   }
@@ -111,14 +111,18 @@ export const validateCreateApp = async (req, res, next) => {
       return res.status(406).send("Invalid task done");
     }
   } catch (error) {
-    res.status(500).send("server error, try again later");
+    return res.status(500).send("server error, try again later");
+  }
+
+  if (req.body.description.length > 255) {
+    return res.status(406).send("Description too long");
   }
 
   next();
 };
 
 export const validateCreatePlan = async (req, res, next) => {
-  const regex = /^[a-zA-Z0-9]+$/;
+  const regex = /^[a-zA-Z0-9]{1,50}$/;
   if (!regex.test(req.body.mvpname)) {
     return res.status(406).send("Invalid plan MVP name");
   }
@@ -177,7 +181,7 @@ export const validateExistingPlan = async (req, res, next) => {
 };
 
 export const validateTaskName = (req, res, next) => {
-  const nameregex = /^[a-zA-Z0-9_]+$/;
+  const nameregex = /^[a-zA-Z0-9]{1,50}$/;
   if (!nameregex.test(req.body.name)) {
     return res.status(406).send("Invalid acronym");
   }
