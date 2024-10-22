@@ -38,28 +38,26 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
   });
 
   const update = () => {
-    if (taskid) {
-      axios
-        .post("/viewtask", { id: taskid })
-        .then(res => {
-          setTask(res.data);
-          axios
-            .post("/checktaskpermission", { app_acronym: res.data.app_acronym, id: taskid, state: res.data.state })
-            .then(() => {
-              setEdit(true);
-              setEditTask({
-                plan: res.data.plan,
-                notes: "",
-              });
-              axios.post("/viewplanlist", { app_acronym: res.data.app_acronym }).then(res => setPlans(res.data));
-            })
-            .catch(() => setEdit(false));
-        })
-        .catch(err => {
-          notify(err.response.data, false);
-          navigate("/login");
-        });
-    }
+    axios
+      .post("/viewtask", { id: taskid })
+      .then(res => {
+        setTask(res.data);
+        axios
+          .post("/checktaskpermission", { app_acronym: res.data.app_acronym, id: taskid, state: res.data.state })
+          .then(() => {
+            setEdit(true);
+            setEditTask({
+              plan: res.data.plan,
+              notes: "",
+            });
+            axios.post("/viewplanlist", { app_acronym: res.data.app_acronym }).then(res => setPlans(res.data));
+          })
+          .catch(() => setEdit(false));
+      })
+      .catch(err => {
+        notify(err.response.data, false);
+        navigate("/login");
+      });
   };
 
   const cancelTask = () => setPopup("");
@@ -167,11 +165,11 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
                 </p>
                 <p>
                   <strong> Created on: </strong>
-                  <input type="date" value={task.createdate} disabled></input>
+                  <input type="date" value={task.createdate} disabled />
                 </p>
                 <p>
                   <strong> Description: </strong>
-                  <textarea  rows={20}  value={task.description} disabled/>
+                  <textarea rows={20} value={task.description} disabled />
                 </p>
               </td>
               <td style={{ textAlign: "left", paddingLeft: "1rem" }}>
@@ -180,7 +178,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
                 {edit ? (
                   <p>
                     <strong> Add Notes: </strong>
-                    <textarea rows={15} value={editTask.notes} onChange={e => setEditTask({ ...editTask, notes: e.target.value })}/>
+                    <textarea rows={15} value={editTask.notes} onChange={e => setEditTask({ ...editTask, notes: e.target.value })} />
                   </p>
                 ) : (
                   <></>

@@ -249,7 +249,7 @@ const UMS = ({ notify }) => {
                     <input
                       type="checkbox"
                       checked={user.isActive}
-                      disabled //Make checkbox in read-only mode
+                      disabled
                     />
                   </td>
                   <td>

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
@@ -7,7 +7,6 @@ import Modal from "react-modal";
 Modal.setAppElement("#root");
 
 const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
-  const [updateBool, updateInfo] = useState(false);
   const [isPM, setIsPM] = useState();
   const headers = ["MVP Name", "Start Date", "End Date", "Colour"];
   const [createPlan, setCreatePlan] = useState({
@@ -19,32 +18,30 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
   const [plans, setPlans] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (popup === "planlist") {
-      if (!app_acronym) {
-        navigate("/");
-      }
-      axios
-        .post("/checkgroup", { group: "pm" })
-        .then(() => setIsPM(true))
-        .catch(() => setIsPM(false));
-
-      axios
-        .post("/viewplans", { acronym: app_acronym })
-        .then(res => setPlans(res.data))
-        .catch(err => {
-          notify(err.response.data, false);
-          switch (err.response.status) {
-            case 401:
-              navigate("/login");
-              break;
-            case 403:
-              navigate("/");
-              break;
-          }
-        });
+  const update = () => {
+    if (!app_acronym) {
+      navigate("/");
     }
-  }, [updateBool, navigate, app_acronym, popup, notify]);
+    axios
+      .post("/checkgroup", { group: "pm" })
+      .then(() => setIsPM(true))
+      .catch(() => setIsPM(false));
+
+    axios
+      .post("/viewplans", { acronym: app_acronym })
+      .then(res => setPlans(res.data))
+      .catch(err => {
+        notify(err.response.data, false);
+        switch (err.response.status) {
+          case 401:
+            navigate("/login");
+            break;
+          case 403:
+            navigate("/");
+            break;
+        }
+      });
+  };
 
   const handleCreate = e => {
     e.preventDefault();
@@ -58,7 +55,7 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
           colour: "#f8f8f8",
         });
         notify("plan created", true);
-        updateInfo(!updateBool);
+        update();
       })
       .catch(err => {
         notify(err.response.data, false);
@@ -70,14 +67,14 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
             navigate("/");
             break;
           default:
-            updateInfo(!updateBool);
+            update();
         }
       });
   };
   const closePlans = () => setPopup("");
 
   return (
-    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "planlist"} onAfterOpen={() => updateInfo(!updateBool)} onRequestClose={closePlans}>
+    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "planlist"} onAfterOpen={update} onRequestClose={closePlans}>
       <main className="main">
         <button className="close" onClick={closePlans}>
           X
@@ -98,13 +95,13 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
                   <input type="text" value={createPlan.mvpname} maxLength={50} onChange={e => setCreatePlan({ ...createPlan, mvpname: e.target.value })} />
                 </td>
                 <td>
-                  <input className="date" type="date" value={createPlan.startdate} onChange={e => setCreatePlan({ ...createPlan, startdate: e.target.value })}></input>
+                  <input className="date" type="date" value={createPlan.startdate} onChange={e => setCreatePlan({ ...createPlan, startdate: e.target.value })} />
                 </td>
                 <td>
-                  <input className="date" type="date" value={createPlan.enddate} onChange={e => setCreatePlan({ ...createPlan, enddate: e.target.value })}></input>
+                  <input className="date" type="date" value={createPlan.enddate} onChange={e => setCreatePlan({ ...createPlan, enddate: e.target.value })} />
                 </td>
                 <td>
-                  <input type="color" value={createPlan.colour} onChange={e => setCreatePlan({ ...createPlan, colour: e.target.value })}></input>
+                  <input type="color" value={createPlan.colour} onChange={e => setCreatePlan({ ...createPlan, colour: e.target.value })} />
                 </td>
                 <td>
                   <button onClick={handleCreate}>Create</button>
@@ -117,13 +114,13 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
               <tr key={plan.mvpname}>
                 <td>{plan.mvpname}</td>
                 <td>
-                  <input className="date" type="date" value={plan.startdate} disabled></input>
+                  <input className="date" type="date" value={plan.startdate} disabled />
                 </td>
                 <td>
-                  <input className="date" type="date" value={plan.enddate} disabled></input>
+                  <input className="date" type="date" value={plan.enddate} disabled />
                 </td>
                 <td>
-                  <input type="color" value={plan.colour} disabled></input>
+                  <input type="color" value={plan.colour} disabled />
                 </td>
               </tr>
             ))}

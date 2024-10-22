@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import Modal from "react-modal";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import Select from "react-select";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -8,22 +8,19 @@ import { useNavigate } from "react-router-dom";
 Modal.setAppElement("#root");
 
 const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
-  const [updateBool, updateInfo] = useState(false);
   const [username, setUsername] = useState("");
   const [task, setTask] = useState({ name: "" });
   const [plans, setPlans] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (popup === "createtask") {
-      axios.get("/viewProfile").then(res => {
-        setUsername(res.data.username);
-        axios.post("/viewplanlist", { app_acronym: app_acronym }).then(res => setPlans(res.data));
-      });
+  const update = () => {
+    axios.get("/viewProfile").then(res => {
+      setUsername(res.data.username);
+      axios.post("/viewplanlist", { app_acronym: app_acronym }).then(res => setPlans(res.data));
+    });
 
-      setTask({ name: "", app_acronym: app_acronym, plan: {}, description: "", notes: "" });
-    }
-  }, [app_acronym, updateBool, navigate, popup]);
+    setTask({ name: "", app_acronym: app_acronym, plan: {}, description: "", notes: "" });
+  }
 
   const cancelTask = () => setPopup("");
 
@@ -49,7 +46,7 @@ const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
   };
 
   return (
-    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "createtask"} onAfterOpen={() => updateInfo(!updateBool)} onRequestClose={cancelTask}>
+    <Modal style={{ overlay: { zIndex: 20 } }} isOpen={popup === "createtask"} onAfterOpen={update} onRequestClose={cancelTask}>
       <main className="main">
         <button className="close" onClick={cancelTask}>
           X
@@ -60,7 +57,7 @@ const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
               <td style={{ textAlign: "left", padding: "1rem", width: "30%" }}>
                 <p>
                   <strong> Task name: </strong>
-                  <input type="text" value={task.name} onChange={e => setTask({ ...task, name: e.target.value })}></input>
+                  <input type="text" value={task.name} onChange={e => setTask({ ...task, name: e.target.value })}/>
                 </p>
                 <p>
                   <strong> App acronym: </strong> {app_acronym}
