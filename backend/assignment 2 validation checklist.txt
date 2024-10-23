@@ -44,6 +44,7 @@ edit task:
 login
 valid task id
 group is in app [state] permission
+task state = state requested
 valid plan or ""
 stamp note
 if state = open/done, add plan
@@ -55,6 +56,8 @@ login
 valid task id
 valid task state
 group is in app [state] permission
+task state = state requested
+
 valid plan or ""
 stamp note
 if state = open/done, add plan
@@ -66,6 +69,8 @@ login
 valid task id
 valid task state
 group is in app [state] permission
+task state = state requested
+
 valid plan or ""
 stamp note
 if state = open/done, add plan

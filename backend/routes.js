@@ -40,7 +40,4 @@ route.post("/addGroup", validateGroupname, AddGroupController);
 route.post("/addUser", validateUsername, validatePassword, encrpytPassword, validateEmail, addUserController);
 route.patch("/editUser", validateSkipPassword, validatePassword, encrpytPassword, validateEmail, validateAdmin, editUserController);
 
-//404
-route.use((req, res) => res.status(404).send("not found"));
-
 export default route;

@@ -13,8 +13,8 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
     mvpname: "",
     startdate: "",
     enddate: "",
-    colour: "#f8f8f8",
-  });
+    colour: "#ffffff",
+  }); 
   const [plans, setPlans] = useState([]);
   const navigate = useNavigate();
 
