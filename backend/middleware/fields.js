@@ -210,7 +210,7 @@ export const stampTaskNotes = async (req, res, next) => {
       state = task.task_state;
     }
 
-    req.body.notes = req.body.notes ? `[${req.username}, ${state}, ${timestamp}(UTC)]\n\n${req.body.notes}\n\n*************\n${notes}\n\n` : notes;
+    req.body.notes = req.body.notes ? `*************\n\n[${req.username}, ${state}, ${timestamp}(UTC)]\n\n${req.body.notes}\n\n${notes}` : notes;
   } catch (error) {
     return res.status(500).send("server error, try again later");
   }

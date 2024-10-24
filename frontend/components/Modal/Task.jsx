@@ -26,7 +26,7 @@ const Task = ({ notify, taskid, popup, setPopup }) => {
   const buttons = {
     open: { promote: "Release" },
     todo: { promote: "Pickup" },
-    doing: { promote: "Seek Approval", demote: "Giveup" },
+    doing: { promote: "Seek Review", demote: "Giveup" },
     done: { promote: "Approve", demote: "Reject" },
     closed: {},
   };

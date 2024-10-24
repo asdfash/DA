@@ -107,7 +107,7 @@ export const addTaskController = async (req, res) => {
     await connection.beginTransaction();
     try {
       const timestamp = new Date().toISOString().slice(0, 19).replace("T", " ");
-      const notes = `[${req.username}, ${state}, ${timestamp}(UTC)]\n\n task promoted to open state \n\n *************\n\n${req.body.notes}`;
+      const notes = ` *************\n\n[${req.username}, ${state}, ${timestamp}(UTC)]\n\n task promoted to open state \n\n${req.body.notes}`;
       await connection.execute("INSERT INTO `task` (`task_id`, `task_name`, `task_description` , `task_notes`, `task_plan`,task_app_acronym, `task_state`, `task_creator`, `task_owner`,`task_createdate`) VALUES (?,?,?,?,?,?,?,?,?,?); ", [`${req.body.app_acronym}_${rnumber + 1}`, req.body.name, req.body.description, req.body.notes, req.body.plan.value || "", req.body.app_acronym, "open", req.username, req.username, createdate]);
       await connection.execute("update application set app_rnumber = ? where app_acronym = ? ", [rnumber + 1, req.body.app_acronym]);
       await connection.commit();
@@ -198,7 +198,7 @@ export const promoteTaskController = async (req, res) => {
     const taskStateUpdate = states[state];
     const taskPlan = state === "done" || state === "open" ? `task_plan = ?, ` : "";
     const timestamp = new Date().toISOString().slice(0, 19).replace("T", " ");
-    const notes = `[${req.username}, ${state}, ${timestamp}(UTC)]\n\n task promoted to ${taskStateUpdate} state \n\n *************\n\n${req.body.notes}`;
+    const notes = `*************\n\n[${req.username}, ${state}, ${timestamp}(UTC)]\n\n task promoted to ${taskStateUpdate} state \n\n${req.body.notes}`;
     const params = [taskStateUpdate, notes, req.username, req.body.id];
 
     taskPlan ? params.unshift(req.body.plan.value) : {};
@@ -222,7 +222,7 @@ export const demoteTaskController = async (req, res) => {
   try {
     const [[{ state }]] = await db.execute("select task_state as state from task where task_id =?", [req.body.id]);
     const timestamp = new Date().toISOString().slice(0, 19).replace("T", " ");
-    const notes = `[${req.username}, ${state}, ${timestamp}(UTC)]\n\n task demoted to ${states[state]} state \n\n*************\n\n${req.body.notes}`;
+    const notes = `*************\n\n[${req.username}, ${state}, ${timestamp}(UTC)]\n\n task demoted to ${states[state]} state \n\n${req.body.notes}`;
     await db.execute(`update task set task_state = ? , ${state === "done" || state === "open" ? `task_plan = \'${req.body.plan.value}\' , ` : ""} task_notes = ? ,task_owner = ? where task_id = ?`, [states[state], notes, req.username, req.body.id]);
     res.send("task demoted");
   } catch (error) {
