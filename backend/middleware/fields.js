@@ -66,14 +66,14 @@ export const validateAdmin = (req, res, next) => {
   next();
 };
 
-export const validateCreateApp = async (req, res, next) => {
+export const validateCreateAppFields = async (req, res, next) => {
   //app_acronym
   const acronymregex = /^[a-zA-Z0-9]{1,50}$/;
-  if (!acronymregex.test(req.body.acronym)) {
+  if (!acronymregex.test(req.body.app_acronym)) {
     return res.status(406).send("Invalid app acronym");
   }
   try {
-    const [[{ count }]] = await db.execute("select count(*) as count from application where app_acronym = ?", [req.body.acronym]);
+    const [[{ count }]] = await db.execute("select count(*) as count from application where app_acronym = ?", [req.body.app_acronym]);
 
     if (count > 0) {
       return res.status(406).send("app acronym already taken");
@@ -81,6 +81,18 @@ export const validateCreateApp = async (req, res, next) => {
   } catch (error) {
     return res.status(500).send("server error, try again later");
   }
+
+  //app_rnumber
+  const rnumberregex = /^(0|[1-9]\d*)$/;
+
+  if (!rnumberregex.test(req.body.rnumber)) {
+    return res.status(406).send("invalid running number");
+  }
+
+  next();
+};
+
+export const validateEditableAppFields = async (req, res, next) => {
   //app_startdate, app_enddate
   const dateregex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
   if (!dateregex.test(req.body.startdate)) {
@@ -95,25 +107,26 @@ export const validateCreateApp = async (req, res, next) => {
     const groups = grouparray.flat();
 
     //permissions
-    if (!groups.includes(req.body.taskcreate.value)) {
+    if (req.body.taskcreate.value && !groups.includes(req.body.taskcreate.value)) {
       return res.status(406).send("Invalid task create");
     }
-    if (!groups.includes(req.body.taskopen.value)) {
+    if (req.body.taskopen.value && !groups.includes(req.body.taskopen.value)) {
       return res.status(406).send("Invalid task open");
     }
-    if (!groups.includes(req.body.tasktodo.value)) {
+    if (req.body.tasktodo.value && !groups.includes(req.body.tasktodo.value)) {
       return res.status(406).send("Invalid task to do");
     }
-    if (!groups.includes(req.body.taskdoing.value)) {
+    if (req.body.taskdoing.value && !groups.includes(req.body.taskdoing.value)) {
       return res.status(406).send("Invalid task doing");
     }
-    if (!groups.includes(req.body.taskdone.value)) {
+    if (req.body.taskdone.value && !groups.includes(req.body.taskdone.value)) {
       return res.status(406).send("Invalid task done");
     }
   } catch (error) {
     return res.status(500).send("server error, try again later");
   }
 
+  //description
   if (req.body.description.length > 255) {
     return res.status(406).send("Description too long");
   }

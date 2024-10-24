@@ -1,8 +1,8 @@
 import express from "express";
 import { AddGroupController, addUserController, viewGroupsController, editEmailController, editPasswordController, editUserController, logoutController, viewProfileController, viewUsersController } from "./controllers/usermanagement.js";
-import { AddAppController, AddPlanController, addTaskController, demoteTaskController, editTaskController, promoteTaskController, ViewAppsController, viewPlanListController, ViewPlansController, ViewTaskController, ViewTasksController } from "./controllers/taskmanagement.js";
+import { AddAppController, AddPlanController, addTaskController, demoteTaskController, EditAppController, editTaskController, promoteTaskController, ViewAppsController, viewPlanListController, ViewPlansController, ViewTaskController, ViewTasksController } from "./controllers/taskmanagement.js";
 import { CheckCreatePermission, CheckGroup, CheckLogin, CheckTaskStatePermission, encrpytPassword, Login } from "./middleware/auth.js";
-import { validateEmail, validateGroupname, validatePassword, validateUsername, validateAdmin, validateSkipPassword, validateCreateApp, validateCreatePlan, validateTaskName, validateExistingApp, validateExistingPlan, stampTaskNotes } from "./middleware/fields.js";
+import { validateEmail, validateGroupname, validatePassword, validateUsername, validateAdmin, validateSkipPassword, validateCreateAppFields, validateCreatePlan, validateTaskName, validateExistingApp, validateExistingPlan, stampTaskNotes, validateEditableAppFields } from "./middleware/fields.js";
 
 //unprotected routes
 const route = express.Router();
@@ -26,9 +26,8 @@ route.post("/viewplanlist", viewPlanListController);
 route.get("/viewapps", ViewAppsController);
 route.post("/addtask", validateExistingApp, validateExistingPlan, validateTaskName, CheckCreatePermission, stampTaskNotes, addTaskController);
 route.post("/addplan", CheckGroup("pm"), validateExistingApp, validateCreatePlan, AddPlanController);
-
-route.post("/addapp", CheckGroup("pl"), validateCreateApp, AddAppController);
-
+route.post("/addapp", CheckGroup("pl"), validateCreateAppFields, validateEditableAppFields, AddAppController);
+route.post("/editapp", CheckGroup("pl"), validateExistingApp, validateEditableAppFields, EditAppController);
 route.post("/promotetask", CheckTaskStatePermission, validateExistingPlan, stampTaskNotes, promoteTaskController);
 route.post("/demotetask", CheckTaskStatePermission, validateExistingPlan, stampTaskNotes, demoteTaskController);
 route.post("/edittask", CheckTaskStatePermission, validateExistingPlan, stampTaskNotes, editTaskController);
