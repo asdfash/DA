@@ -24,7 +24,7 @@ axios.defaults.baseURL = "http://localhost:5000";
 
 const App = () => {
   const [notification, setNotification] = useState({ msg: "", duration: 1500, success: true });
-  const [appAcronym, setAppAcronym] = useState({});
+  const [appAcronym, setAppAcronym] = useState("");
   const notify = (msg, success) => {
     setNotification({ ...notification, msg: "" });
     setNotification({ ...notification, msg: msg, success: success });

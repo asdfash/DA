@@ -20,6 +20,7 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
 
   const update = () => {
     if (!app_acronym) {
+      console.log(app_acronym)
       navigate("/");
     }
     axios
@@ -28,7 +29,7 @@ const Planlist = ({ notify, app_acronym, popup, setPopup }) => {
       .catch(() => setIsPM(false));
 
     axios
-      .post("/viewplans", { acronym: app_acronym })
+      .post("/viewplans", { app_acronym: app_acronym })
       .then(res => setPlans(res.data))
       .catch(err => {
         notify(err.response.data, false);

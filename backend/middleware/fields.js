@@ -189,7 +189,7 @@ export const validateTaskName = (req, res, next) => {
 export const stampTaskNotes = async (req, res, next) => {
   const timestamp = new Date().toISOString().slice(0, 19).replace("T", " ");
   let notes = "";
-  let state = "open";
+  let state = " - ";
   try {
     if (req.body.id) {
       const [[task]] = await db.execute("select task_notes, task_state from task where task_id =?", [req.body.id]);

@@ -2,9 +2,8 @@
 import Modal from "react-modal";
 import Select from "react-select";
 import axios from "axios";
-import { useState} from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 
 Modal.setAppElement("#root");
 
@@ -21,7 +20,7 @@ const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
     });
 
     setTask({ name: "", app_acronym: app_acronym, plan: {}, description: "", notes: "" });
-  }
+  };
 
   const cancelTask = () => setPopup("");
 
@@ -58,7 +57,7 @@ const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
               <td style={{ textAlign: "left", padding: "1rem", width: "30%" }}>
                 <p>
                   <strong> Task name: </strong>
-                  <input type="text" value={task.name} onChange={e => setTask({ ...task, name: e.target.value })}/>
+                  <input type="text" value={task.name} onChange={e => setTask({ ...task, name: e.target.value })} />
                 </p>
                 <p>
                   <strong> App acronym: </strong> {app_acronym}
@@ -78,11 +77,9 @@ const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
                     />
                   </div>
                 </div>
-
                 <p>
                   <strong> State: </strong> open
                 </p>
-
                 <p>
                   <strong> Creator: </strong> {username}
                 </p>
@@ -92,17 +89,17 @@ const CreateTask = ({ notify, app_acronym, popup, setPopup }) => {
 
                 <p>
                   <strong style={{ verticalAlign: "top" }}> Description: </strong>
-                  <textarea maxLength={255} rows={15} value={task.description} onChange={e => setTask({ ...task, description: e.target.value })}/>
+                  <textarea maxLength={255} rows={15} value={task.description} onChange={e => setTask({ ...task, description: e.target.value })} />
                 </p>
               </td>
               <td style={{ textAlign: "left", paddingLeft: "1rem" }}>
                 <div>
                   <strong> Notes: </strong>
-                  <textarea rows={15} disabled/>
+                  <textarea rows={15} disabled />
                 </div>
                 <p>
                   <strong> Add Notes: </strong>
-                  <textarea rows={25} value={task.notes} onChange={e => setTask({ ...task, notes: e.target.value })}/>
+                  <textarea rows={25} value={task.notes} onChange={e => setTask({ ...task, notes: e.target.value })} />
                 </p>
               </td>
             </tr>

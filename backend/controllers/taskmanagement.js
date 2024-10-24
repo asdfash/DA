@@ -37,7 +37,7 @@ export const AddAppController = async (req, res) => {
 //planlist
 export const ViewPlansController = async (req, res) => {
   try {
-    const [planarray] = await db.execute("SELECT * FROM plan WHERE plan_app_acronym = ?", [req.body.acronym]);
+    const [planarray] = await db.execute("SELECT * FROM plan WHERE plan_app_acronym = ?", [req.body.app_acronym]);
 
     const plans = planarray.map(plan => ({
       mvpname: plan.plan_mvp_name,

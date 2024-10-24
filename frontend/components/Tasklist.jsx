@@ -23,6 +23,7 @@ const Tasklist = ({ notify, appAcronym }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(appAcronym)
     if (!appAcronym) {
       navigate("/");
     } else if (popup === "") {
@@ -41,12 +42,10 @@ const Tasklist = ({ notify, appAcronym }) => {
             case 403:
               navigate("/");
               break;
-            default:
-              notify(err.response.data, false);
           }
         });
     }
-  }, [navigate, notify, popup, appAcronym]);
+  }, [appAcronym, navigate, popup]);
 
   return (
     <main className="main">

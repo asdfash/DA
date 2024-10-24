@@ -3,24 +3,28 @@ import bcrypt from "bcryptjs";
 import db from "../utils/mysql.js";
 
 export const Login = async (req, res, next) => {
-  const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username]);
-  if (login && bcrypt.compareSync(req.body.password, login.password) && login.isActive) {
-    res.cookie(
-      "token",
-      jwt.sign(
-        {
-          username: req.body.username,
-          ip: req.ip,
-          browser: req.headers["user-agent"],
-        },
-        process.env.TOKENSECRET,
-        { expiresIn: process.env.TOKENHOURS * 60 * 60 }
-      ),
+  try {
+    const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username]);
+    if (login && bcrypt.compareSync(req.body.password, login.password) && login.isActive) {
+      res.cookie(
+        "token",
+        jwt.sign(
+          {
+            username: req.body.username,
+            ip: req.ip,
+            browser: req.headers["user-agent"],
+          },
+          process.env.TOKENSECRET,
+          { expiresIn: process.env.TOKENHOURS * 60 * 60 }
+        ),
 
-      { maxAge: process.env.TOKENHOURS * 60 * 60 * 1000, httpOnly: true, secure: process.env.ENV === "Production", sameSite: "Strict" }
-    );
-    next();
-  } else {
+        { maxAge: process.env.TOKENHOURS * 60 * 60 * 1000, httpOnly: true, secure: process.env.ENV === "Production", sameSite: "Strict" }
+      );
+      next();
+    } else {
+      return res.status(401).send("error logging in");
+    }
+  } catch (error) {
     return res.status(401).send("error logging in");
   }
 };
