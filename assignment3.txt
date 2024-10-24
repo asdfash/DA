@@ -1,0 +1,96 @@
+assignment3
+
+assignment 1/2 was monolithic
+
+ass3 will focus on 
+1.error handling
+2.clear contract
+- why? backend dev need offer service to frontend dev
+
+in prod, backend usually get hits harder
+can scale up (hardware) but got limitation
+so need scale out
+ - but need balancer (which frontend calls)
+ -- need lots of infra cost
+
+need microservice
+1. refactor to small design
+scope v small
+either throw to db/persistent storage
+
+what makes a good candidate?
+1. performance issue
+2. scalability
+
+container: small form factor
+- spin up/down fast
+-- maximise infra
+
+run on Kubernetes => load balancing, container running
+==>can scale out now yey
+but now the chokepoint is db
+- message queue
+-- use pubsub: controller write to queue, have subscriber(s) to write to queue
+--- make sure queue size is big enough
+-- check bizflow, can I create any async transaction? if yes adopt microservice
+
+no right way to auth, but for this ass we pass in login credential
+ 
+
+ways to make microservice
+
+REST API
+- stateless
+- json/xml as payload - take note of body
+-- turn on SSL, otherwise itll be unencrpted
+- http 1.1
+
+2.  GRPC
+- stateless
+- bidirectional (e.g chat)
+- performant (better around 100k users)
+- potobuf body
+ -- hhtp2 (need proxy)
+
+3. grahpql
+- graphql server
+- allows you to query data directly
+-- sercurity risk if used in frontend
+- slow
+
+4. websocket
+- streaming
+
+
+
+
+Assignment 3 req:
+contract:
+"frontend-like" capability
+- error handle 
+- look at workflow
+A - url 
+B - body structure 
+C- IAM
+D - transaction 
+
+
+USE YOUR OWN ERROR CODE - 3letter3number
+
+contract:
+fix url (e.g localhost/createtask)
+add datatype
+fix casing
+use interpreter
+
+example use curl, js
+scripts found here (code snippet, just CUT AND PASTE)
+
+
+curl only works for Linux, make sure to find out for cmd/powershell
+
+url need handle special char`
+
+
+
+
