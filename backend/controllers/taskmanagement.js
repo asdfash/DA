@@ -280,22 +280,19 @@ export const editTaskController = async (req, res) => {
  *  - send {code}
  */
 
-
 export const createTaskController = async (req, res) => {
-  const task_id = "lmao"
-  console.log(req.body)
-  res.send({ task_id,code: "S000" });
+  const task_id = "lmao";
+  res.send({ task_id, code: "S000" });
 };
 
 export const getTaskByStateController = async (req, res) => {
-  const tasks = [{task_id:'test'}]
-  console.log(req.url) //returns full url
-  console.log(req.rawHeaders) // returns array, check for 'application/json'
-  console.log(req.body) // returns json object, {} if body type is different
-  res.send({ tasks,code: "S000" });
+  const tasks = [{ task_id: "test1" }, { task_id: "test2" }, { task_id: "test3" }];
+  console.log(req.url); //returns full url
+  console.log(req.headers["content-type"]); // returns content type'
+  console.log(req.body); // returns json object, {} if body type is different
+  res.send({ tasks, code: "S000" });
 };
 
 export const promoteTask2DoneController = async (req, res) => {
-  console.log(req.body)
   res.send({ code: "S000" });
 };
