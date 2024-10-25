@@ -1,6 +1,6 @@
 import express from "express";
 import { AddGroupController, addUserController, viewGroupsController, editEmailController, editPasswordController, editUserController, logoutController, viewProfileController, viewUsersController } from "./controllers/usermanagement.js";
-import { AddAppController, AddPlanController, addTaskController, demoteTaskController, EditAppController, editTaskController, promoteTaskController, ViewAppsController, viewPlanListController, ViewPlansController, ViewTaskController, ViewTasksController } from "./controllers/taskmanagement.js";
+import { AddAppController, AddPlanController, addTaskController, createTaskController, demoteTaskController, EditAppController, editTaskController, getTaskByStateController, promoteTask2DoneController, promoteTaskController, ViewAppsController, viewPlanListController, ViewPlansController, ViewTaskController, ViewTasksController } from "./controllers/taskmanagement.js";
 import { CheckCreatePermission, CheckGroup, CheckLogin, CheckTaskStatePermission, encrpytPassword, Login } from "./middleware/auth.js";
 import { validateEmail, validateGroupname, validatePassword, validateUsername, validateAdmin, validateSkipPassword, validateCreateAppFields, validateCreatePlan, validateTaskName, validateExistingApp, validateExistingPlan, stampTaskNotes, validateEditableAppFields } from "./middleware/fields.js";
 
@@ -40,3 +40,10 @@ route.post("/addUser", validateUsername, validatePassword, encrpytPassword, vali
 route.patch("/editUser", validateSkipPassword, validatePassword, encrpytPassword, validateEmail, validateAdmin, editUserController);
 
 export default route;
+
+const apiroute = express.Router();
+apiroute.post("/createtask",createTaskController)
+apiroute.post("/gettaskbystate",getTaskByStateController)
+apiroute.patch("/promotetask2done",promoteTask2DoneController)
+
+export { apiroute };

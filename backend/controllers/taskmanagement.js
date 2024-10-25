@@ -239,3 +239,63 @@ export const editTaskController = async (req, res) => {
     res.status(500).send("server error, try again later");
   }
 };
+
+/**
+ * create task:
+ *  - validate url
+ *  - validate body structure
+ *  - validate username
+ *  - validate password
+ *  - validate user group
+ *  - validate task app acronym
+ *  - validate task name
+ *  - validate task description
+ *  - validate task note
+ *  - validate task plan
+ *  - create task
+ *  -- increment app rnumber
+ *  -- rollback if fail
+ *  - send {taskid, code}
+ *
+ * get task by state:
+ *  - validate url
+ *  - validate body structure
+ *  - validate username
+ *  - validate password
+ *  - validate app acronym
+ *  - validate task state
+ *  - get task
+ *  - send {array of tasks,code}
+ *
+ *  * promote task 2 done:
+ *  - validate url
+ *  - validate body structure
+ *  - validate username
+ *  - validate password
+ *  - validate user group
+ *  - validate taskid
+ *  - validate task notes
+ *  - promote task
+ *  - send email
+ *  - send {code}
+ */
+
+
+export const createTaskController = async (req, res) => {
+  const task_id = "lmao"
+  console.log(req.body)
+  res.send({ task_id,code: "S000" });
+};
+
+export const getTaskByStateController = async (req, res) => {
+  const tasks = [{task_id:'test'}]
+  console.log(req.url) //returns full url
+  console.log(req.rawHeaders) // returns array, check for 'application/json'
+  console.log(req.body) // returns json object, {} if body type is different
+  res.send({ tasks,code: "S000" });
+};
+
+export const promoteTask2DoneController = async (req, res) => {
+  console.log(req.body)
+  res.send({ code: "S000" });
+};

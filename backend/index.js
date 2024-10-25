@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import route from "./routes.js";
+import { apiroute } from "./routes.js";
 
 const app = express();
 const port = process.env.BACKENDPORT || 5000;
@@ -15,10 +16,11 @@ app.use(
 );
 
 app.use(express.json()); //Setup express to take in body data in json
-app.use(cookieParser());
+// app.use(cookieParser());
 
-//routing
-app.use(route);
+// // routing
+// app.use(route);
+app.use(apiroute);
 
 /** App listening on port */
 app.listen(port, () => {

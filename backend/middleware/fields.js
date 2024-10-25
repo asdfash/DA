@@ -68,7 +68,7 @@ export const validateAdmin = (req, res, next) => {
 
 export const validateCreateAppFields = async (req, res, next) => {
   //app_acronym
-  const acronymregex = /^[a-zA-Z0-9]{1,50}$/;
+  const acronymregex = /^[a-zA-Z0-9 ]{1,50}$/;
   if (!acronymregex.test(req.body.app_acronym)) {
     return res.status(406).send("Invalid app acronym");
   }
@@ -135,7 +135,7 @@ export const validateEditableAppFields = async (req, res, next) => {
 };
 
 export const validateCreatePlan = async (req, res, next) => {
-  const regex = /^[a-zA-Z0-9]{1,50}$/;
+  const regex = /^[a-zA-Z0-9 ]{1,50}$/;
   if (!regex.test(req.body.mvpname)) {
     return res.status(406).send("Invalid plan MVP name");
   }
@@ -192,7 +192,7 @@ export const validateExistingPlan = async (req, res, next) => {
 };
 
 export const validateTaskName = (req, res, next) => {
-  const nameregex = /^[a-zA-Z0-9]{1,50}$/;
+  const nameregex = /^[a-zA-Z0-9 ]{1,50}$/;
   if (!nameregex.test(req.body.name)) {
     return res.status(406).send("Invalid acronym");
   }

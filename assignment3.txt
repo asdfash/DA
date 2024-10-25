@@ -69,13 +69,13 @@ contract:
 "frontend-like" capability
 - error handle 
 - look at workflow
-A - url 
+A - url/uri 
 B - body structure 
-C- IAM
+C - IAM
 D - transaction 
 
 
-USE YOUR OWN ERROR CODE - 3letter3number
+USE YOUR OWN ERROR CODE - recommend 3letter3number
 
 contract:
 fix url (e.g localhost/createtask)
