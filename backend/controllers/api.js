@@ -88,17 +88,30 @@ export const getTaskByStateController = async (req, res) => {
 
   try {
     //iam
-    if (typeof req.body.username != "string" || !req.body.username || req.body.username.length > maxlength.username) {
+    if (!req.body.username) {
       return res.json({
         code: codes.wrongvalue,
       });
     }
 
-    if (typeof req.body.password != "string" || !req.body.password || req.body.password.length > maxlength.password) {
+    if (typeof req.body.username != "string" || req.body.username.length > maxlength.username) {
       return res.json({
         code: codes.wrongvalue,
       });
     }
+
+    if (!req.body.password) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+
+    if (typeof req.body.password != "string" || req.body.password.length > maxlength.password) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+
     const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username || ""]);
     if (!login || !bcrypt.compareSync(req.body.password, login.password) || !login.isActive) {
       return res.json({
@@ -146,7 +159,92 @@ export const getTaskByStateController = async (req, res) => {
 };
 
 export const createTaskController = async (req, res) => {
-  res.json({ code: "S000" });
+  const codes = {
+    urlextra: "A001",
+    bodytype: "B001",
+    bodyparam: "B002",
+    credential: "C001",
+    wrongvalue: "D001",
+    internalerror: "E004",
+    success: "S000",
+  };
+
+  const url = "/createtask";
+  const objType = "application/json";
+  const mandatorykeys = ["username", "password", "task_app_acronym", "task_name"];
+  const maxlength = {
+    username: 50,
+    password: 50,
+    task_app_acronym: 50,
+    task_name: 50,
+    task_description: 255,
+    task_plan: 50,
+  };
+
+  //URL
+  if (req.url.toLowerCase() !== url) {
+    return res.json({
+      code: codes.urlextra,
+    });
+  }
+
+  //body
+  if (req.headers["content-type"] !== objType) {
+    return res.json({
+      code: codes.bodytype,
+    });
+  }
+
+  const keys = Object.keys(req.body);
+  for (const key of mandatorykeys) {
+    if (!keys.includes(key)) {
+        console.log(key)
+      return res.json({
+        code: codes.bodyparam,
+      });
+    }
+  }
+
+  try {
+    //iam
+    if (!req.body.username) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+
+    if (typeof req.body.username != "string" || req.body.username.length > maxlength.username) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+
+    if (!req.body.password) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+
+    if (typeof req.body.password != "string" || req.body.password.length > maxlength.password) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+
+    const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username || ""]);
+    if (!login || !bcrypt.compareSync(req.body.password, login.password) || !login.isActive) {
+      return res.json({
+        code: codes.credential,
+      });
+    }
+
+    //transaction
+  } catch (error) {
+    console.log(error);
+    return res.json({ code: codes.internalerror });
+  }
+
+  res.json({ code: codes.success });
 };
 
 export const promoteTask2DoneController = async (req, res) => {

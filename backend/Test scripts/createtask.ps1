@@ -150,7 +150,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- username wrong type, code is $($response.code) "
@@ -165,7 +165,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- password  wrong type, code is $($response.code) "
@@ -180,7 +180,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- acronym wrong type, code is $($response.code) "
@@ -195,7 +195,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- taskname wrong type, code is $($response.code) "
@@ -210,7 +210,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- description wrong type, code is $($response.code) "
@@ -225,7 +225,7 @@ try {
         task_notes       = 12345
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- notes wrong type, code is $($response.code) "
@@ -240,7 +240,7 @@ try {
         task_notes       = $notes
         task_plan        = 12345
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- plan wrong type, code is $($response.code) "
@@ -255,7 +255,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- username too long, code is $($response.code) "
@@ -270,7 +270,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- password  too long, code is $($response.code) "
@@ -285,7 +285,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- acronym too long, code is $($response.code) "
@@ -300,7 +300,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- taskname too long, code is $($response.code) "
@@ -315,7 +315,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- description too long, code is $($response.code) "
@@ -330,7 +330,7 @@ try {
         task_notes       = $notes
         task_plan        = "123456789012345678901234567890123456789012345678901"
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- plan too long, code is $($response.code) "
@@ -345,7 +345,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- username missing, code is $($response.code) "
@@ -360,7 +360,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- password  missing, code is $($response.code) "
@@ -375,7 +375,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- acronym missing, code is $($response.code) "
@@ -390,7 +390,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- taskname missing, code is $($response.code) "
@@ -405,7 +405,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "S000") {
         Write-Output "- description missing, code is $($response.code) "
@@ -420,7 +420,7 @@ try {
         task_notes       = ""
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "S000") {
         Write-Output "- notes missing, code is $($response.code) "
@@ -435,7 +435,7 @@ try {
         task_notes       = $notes
         task_plan        = ""
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "S000") {
         Write-Output "- plan missing, code is $($response.code) "
@@ -450,7 +450,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- taskname dne, code is $($response.code) "
@@ -464,7 +464,7 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- acronym dne, code is $($response.code) "
@@ -484,13 +484,13 @@ try {
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     Write-Output $response.task_id
     Write-Output ""
     Write-Output $response.code
 
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     Write-Output $response.task_id
     Write-Output ""
