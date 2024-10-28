@@ -239,5 +239,3 @@ export const editTaskController = async (req, res) => {
     res.status(500).send("server error, try again later");
   }
 };
-
-
