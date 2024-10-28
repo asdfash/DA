@@ -136,10 +136,11 @@ try {
         Write-Output "- unauthorised user, code is $($response.code)"
     }
 
-    # # transaction
-    # Write-Output ""
-    # Write-Output "IAM Tests done, Testing Transaction"
-    # Write-Output ""
+    # transaction
+    Write-Output ""
+    Write-Output "IAM Tests done, Testing Transaction. WIP, so non exhaustive"
+    Write-Output ""
+
 
     # $body = @{
     #     username    = $plusername 

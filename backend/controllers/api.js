@@ -54,12 +54,12 @@ export const getTaskByStateController = async (req, res) => {
 
   const url = "/gettaskbystate";
   const objType = "application/json";
-  const mandatorykeys = ["username", "password", "app_acronym", "task_state"];
+  const mandatorykeys = ["username", "password", "task_app_acronym", "task_state"];
   const states = ["open", "todo", "doing", "done", "closed"];
   const maxlength = {
     username: 50,
     password: 50,
-    app_acronym: 50,
+    task_app_acronym: 50,
     task_state: 10,
   };
 
@@ -107,14 +107,14 @@ export const getTaskByStateController = async (req, res) => {
     }
 
     //transaction
-    if (!req.body.app_acronym || typeof req.body.app_acronym != "string" || req.body.app_acronym.length > maxlength.app_acronym) {
+    if (!req.body.task_app_acronym || typeof req.body.task_app_acronym != "string" || req.body.task_app_acronym.length > maxlength.task_app_acronym) {
       return res.json({
         code: codes.wrongvalue,
       });
     }
 
     const [apparray] = await db.execute({ sql: `select distinct app_acronym from application`, rowsAsArray: true });
-    if (!apparray.flat().includes(req.body.app_acronym)) {
+    if (!apparray.flat().includes(req.body.task_app_acronym)) {
       return res.json({
         code: codes.wrongvalue,
       });
@@ -126,8 +126,8 @@ export const getTaskByStateController = async (req, res) => {
       });
     }
 
-    const [tasksarray] = await db.execute("select * from task where task_app_acronym = ? and task_state = ?", [req.body.app_acronym, req.body.task_state]);
-    const [planarray] = await db.execute("select plan_mvp_name , plan_colour from plan where plan_app_acronym = ?", [req.body.app_acronym]);
+    const [tasksarray] = await db.execute("select * from task where task_app_acronym = ? and task_state = ?", [req.body.task_app_acronym, req.body.task_state]);
+    const [planarray] = await db.execute("select plan_mvp_name , plan_colour from plan where plan_app_acronym = ?", [req.body.task_app_acronym]);
     const plans = {};
     planarray.forEach(plan => (plans[plan.plan_mvp_name] = plan.plan_colour));
     const tasks = tasksarray.map(task => ({
@@ -146,60 +146,7 @@ export const getTaskByStateController = async (req, res) => {
 };
 
 export const createTaskController = async (req, res) => {
-  const codes = {
-    urlextra: "A001",
-    bodytype: "B001",
-    bodyparam: "B002",
-    credential: "C001",
-    wrongvalue: "D001",
-    internalerror: "E004",
-    success: "S000",
-  };
-
-  const url = "/createtask";
-  const objType = "application/json";
-  const mandatorykeys = ["username", "password", "task_app_acronym", "task_name"];
-  //URL
-  if (req.url.toLowerCase() !== url) {
-    return res.json({
-      code: codes.urlextra,
-    });
-  }
-
-  //body
-  if (req.headers["content-type"] !== objType) {
-    return res.json({
-      code: codes.bodytype,
-    });
-  }
-
-  const keys = Object.keys(req.body);
-  for (const key of mandatorykeys) {
-    if (!keys.includes(key)) {
-      return res.json({
-        code: codes.bodyparam,
-      });
-    }
-  }
-
-  try {
-    //iam
-    const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username || ""]);
-    if (!login || !bcrypt.compareSync(req.body.password, login.password) || !login.isActive) {
-      return res.json({
-        code: codes.credential,
-      });
-    }
-
-    //transaction
-
-    const task_id = "zoo_69";
-    return res.json({ task_id, code: codes.success });
-  } catch (error) {
-    return res.json({
-      code: codes.internalerror,
-    });
-  }
+  res.json({ code: "S000" });
 };
 
 export const promoteTask2DoneController = async (req, res) => {

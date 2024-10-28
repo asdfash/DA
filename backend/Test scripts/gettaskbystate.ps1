@@ -75,7 +75,7 @@ try {
         username    = "*"
         password    = $password
         task_state  = $state
-        app_acronym = $acronym
+        task_app_acronym = $acronym
         f           = "f"
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
@@ -94,7 +94,7 @@ try {
         username    = $username
         password    = 'wrongpassword'
         task_state  = $state
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -111,7 +111,7 @@ try {
         username    = $username
         password    = $password
         task_state  = ''
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -123,7 +123,7 @@ try {
         username    = $username
         password    = $password
         task_state  = $state
-        app_acronym = ''
+        task_app_acronym = ''
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -135,7 +135,7 @@ try {
         username    = $username
         password    = $password
         task_state  = 'dne'
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -146,7 +146,7 @@ try {
         username    = $username
         password    = $password
         task_state  = 'open'
-        app_acronym = 'this should not exist!'
+        task_app_acronym = 'this should not exist!'
     } | ConvertTo-Json
 
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
@@ -159,7 +159,7 @@ try {
         username    = $username
         password    = $password
         task_state  = 'OPEN'
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -171,7 +171,7 @@ try {
         username    = $username
         password    = $password
         task_state  = 'open'
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -183,7 +183,7 @@ try {
         username    = $username
         password    = $password
         task_state  = 'Open'
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -197,7 +197,7 @@ try {
         username    = "123456789012345678901234567890123456789012345678901"
         password    = $password
         task_state  =  $state
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -209,7 +209,7 @@ try {
         username    = $username
         password    = "123456789012345678901234567890123456789012345678901"
         task_state  = $state
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -221,7 +221,7 @@ try {
         username    = $username
         password    = $password
         task_state  = "123456789012345678901234567890123456789012345678901"
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -233,7 +233,7 @@ try {
         username    = $username
         password    = $password
         task_state  = $state
-        app_acronym = "123456789012345678901234567890123456789012345678901"
+        task_app_acronym = "123456789012345678901234567890123456789012345678901"
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -245,7 +245,7 @@ try {
         username    = 12345
         password    = $password
         task_state  = $state
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -257,7 +257,7 @@ try {
         username    = $username
         password    = 12345
         task_state  = $state
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -269,7 +269,7 @@ try {
         username    = $username
         password    = $password
         task_state  = 12345
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -281,7 +281,7 @@ try {
         username    = $username
         password    = $password
         task_state  = $state
-        app_acronym = 12345
+        task_app_acronym = 12345
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -297,7 +297,7 @@ try {
         username    = $username
         password    = $password
         task_state  = $state
-        app_acronym = $acronym
+        task_app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
