@@ -5,7 +5,7 @@ $state = 'doing'
 $acronym = "zoo" #insert valid acronym here
 
 
-Write-Output "Any points listed are errors"
+Write-Output    "Any points listed are errors"
 try {
     # url
     Write-Output ""
