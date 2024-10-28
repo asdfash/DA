@@ -15,28 +15,28 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/GetTaskByState?"
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "A001") {
-        Write-Output "- url special char"
+        Write-Output "- url special char, code is $($response.code)"
     }
 
     # caseinsensitive
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/GetTaskByState"
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -eq "A001") {
-        Write-Output "- url camelcase"
+        Write-Output "- url camelcase, code is $($response.code)"
     }
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/GETTASKBYSTATE"
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -eq "A001") {
-        Write-Output "- url uppercase"
+        Write-Output "- url uppercase, code is $($response.code)"
     }
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate"
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -eq "A001") {
-        Write-Output "- url lowercase"
+        Write-Output "- url lowercase, code is $($response.code)"
     }
     try {
         $response = Invoke-RestMethod -Method 'Get' -Uri "http://localhost:3000/gettaskbystate"
-        Write-Output "request type get"
+        Write-Output "request type get, code is $($response.code)"
     }
     catch {
     }
@@ -49,28 +49,28 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate"
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "B001") {
-        Write-Output "missing body"
+        Write-Output "missing body, code is $($response.code)"
     }
 
     $body = @{f = 'f' } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/javascript" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "B001") {
-        Write-Output "wrong body type"
+        Write-Output "wrong body type, code is $($response.code)"
     }
 
     $body = @{} | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "B002") {
-        Write-Output "No keys"
+        Write-Output "No keys, code is $($response.code)"
     }
 
     $body = @{username = $username } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "B002") {
-        Write-Output "Partial keys"
+        Write-Output "Partial keys, code is $($response.code)"
     }
 
     $body = @{
@@ -83,7 +83,7 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -eq "B002") {
-        Write-Output "extra keys"
+        Write-Output "extra keys, code is $($response.code)"
     }
 
     Write-Output ""
@@ -100,7 +100,7 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "C001") {
-        Write-Output "Invalid credentials"
+        Write-Output "Invalid credentials, code is $($response.code)"
     }
 
     Write-Output ""
@@ -116,7 +116,7 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
-        Write-Output "missing state"
+        Write-Output "missing state, code is $($response.code)"
     }
 
     $body = @{
@@ -128,7 +128,7 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
-        Write-Output "missing acronym"
+        Write-Output "missing acronym, code is $($response.code)"
     }
 
     $body = @{
@@ -139,8 +139,8 @@ try {
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D004") {
-        Write-Output "state DNE"
+    if ($response.code -ne "D001") {
+        Write-Output "state DNE, code is $($response.code)"
     }
     $body = @{
         username    = $username
@@ -151,8 +151,8 @@ try {
 
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D004") {
-        Write-Output "acronym DNE"
+    if ($response.code -ne "D001") {
+        Write-Output "acronym DNE, code is $($response.code)"
     }
 
     $body = @{
@@ -164,7 +164,7 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "S000") {
-        Write-Output "capitalized state"
+        Write-Output "capitalized state, code is $($response.code)"
     }
 
     $body = @{
@@ -175,8 +175,8 @@ try {
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D004") {
-        Write-Output "username too long"
+    if ($response.code -ne "D001") {
+        Write-Output "username too long, code is $($response.code) "
     }
 
     $body = @{
@@ -187,8 +187,8 @@ try {
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D004") {
-        Write-Output "password too long"
+    if ($response.code -ne "D001") {
+        Write-Output "password too long, code is $($response.code) "
     }
 
     $body = @{
@@ -199,8 +199,8 @@ try {
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D004") {
-        Write-Output "state too long"
+    if ($response.code -ne "D001") {
+        Write-Output "state too long, code is $($response.code)"
     }
 
     $body = @{
@@ -211,19 +211,20 @@ try {
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D004") {
-        Write-Output "acronym too long"
+    if ($response.code -ne "D001") {
+        Write-Output "acronym too long, code is $($response.code)"
     }
 
-
     # visual test
+    Write-Output ""
+    Write-Output "automated tests done, check value of state from db"
+    Write-Output ""
     $body = @{
         username    = $username
         password    = $password
         task_state  = $state
         app_acronym = $acronym
     } | ConvertTo-Json
-    Write-Output "automated tests done, check value of state from db"
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     Write-Output $response

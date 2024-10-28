@@ -55,6 +55,13 @@ export const getTaskByStateController = async (req, res) => {
   const url = "/gettaskbystate";
   const objType = "application/json";
   const mandatorykeys = ["username", "password", "app_acronym", "task_state"];
+  const states = ["open","todo","doing","done","closed"]
+  const maxlength ={
+    username:50,
+    password:50,
+    app_acronym:50,
+    task_state:10,
+  } 
 
   //URL
   if (req.url.toLowerCase() !== url) {
@@ -80,14 +87,40 @@ export const getTaskByStateController = async (req, res) => {
   }
 
   try {
+
     //iam
+    if (!req.body.username || req.body.username.length > maxlength.username) {
+        return res.json({
+            code: codes.wrongvalue,
+          }); 
+    }
+
+    if (!req.body.password || req.body.password.length > maxlength.password) {
+        return res.json({
+            code: codes.wrongvalue,
+          }); 
+    }
     const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username || ""]);
     if (!login || !bcrypt.compareSync(req.body.password, login.password) || !login.isActive) {
       return res.json({
         code: codes.credential,
       });
     }
+
+
     //transaction
+    if (!req.body.app_acronym || req.body.app_acronym.length > maxlength.app_acronym) {
+        return res.json({
+            code: codes.wrongvalue,
+          }); 
+    }
+
+    if (!states.includes(req.body.task_state.toLowerCase())) {
+        return res.json({
+            code: codes.wrongvalue,
+          }); 
+    }
+
     const [tasksarray] = await db.execute("select * from task where task_app_acronym = ? and task_state = ?", [req.body.app_acronym, req.body.task_state]);
     const [planarray] = await db.execute("select plan_mvp_name , plan_colour from plan where plan_app_acronym = ?", [req.body.app_acronym]);
     const plans = {};
