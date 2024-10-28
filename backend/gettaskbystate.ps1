@@ -1,7 +1,8 @@
-#write user here
+#insert valid user, state,acronym here (that has actual tasks)
 $username = "testdev"
 $password = "abc123!!"
-$acronym = "" #insert valid acronym here
+$state = 'doing'
+$acronym = "zoo" #insert valid acronym here
 
 
 Write-Output "Any points listed are errors"
@@ -72,8 +73,21 @@ try {
         Write-Output "Partial keys"
     }
 
+    $body = @{
+        username    = $username
+        password    = ''
+        task_state  = 'open'
+        app_acronym = ''
+        f           = "f"
+    } | ConvertTo-Json
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
+    if ($response.code -eq "B002") {
+        Write-Output "extra keys"
+    }
 
     Write-Output ""
+    Write-Output "*note duplicate keys cant be tested here"
     Write-Output "Body Tests done, Testing IAM"
     Write-Output ""
 
@@ -90,7 +104,7 @@ try {
     }
 
     Write-Output ""
-    Write-Output "Body Tests done, Testing Transaction"
+    Write-Output "IAM Tests done, Testing Transaction"
     Write-Output ""
 
     $body = @{
@@ -120,13 +134,25 @@ try {
     $body = @{
         username    = $username
         password    = $password
-        task_state  = 'open'
+        task_state  = 'dne'
         app_acronym = $acronym
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "S000") {
-        Write-Output "missing state"
+    if ($response.code -ne "D004") {
+        Write-Output "state DNE"
+    }
+    $body = @{
+        username    = $username
+        password    = $password
+        task_state  = 'open'
+        app_acronym = 'this should not exist!'
+    } | ConvertTo-Json
+
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
+    if ($response.code -ne "D004") {
+        Write-Output "acronym DNE"
     }
 
     $body = @{
@@ -189,30 +215,18 @@ try {
         Write-Output "acronym too long"
     }
 
+
+    # visual test
     $body = @{
         username    = $username
         password    = $password
-        task_state  = 'dne'
+        task_state  = $state
         app_acronym = $acronym
     } | ConvertTo-Json
+    Write-Output "automated tests done, check value of state from db"
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D004") {
-        Write-Output "state DNE"
-    }
-    $body = @{
-        username    = $username
-        password    = $password
-        task_state  = 'open'
-        app_acronym = 'this should not exist!'
-    } | ConvertTo-Json
-
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
-    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D004") {
-        Write-Output "acronym DNE"
-    }
-
+    Write-Output $response
 }
 catch {
     Write-Output "Error: Unable to reach API - $($_.Exception.Message)" 
