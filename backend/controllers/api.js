@@ -113,6 +113,13 @@ export const getTaskByStateController = async (req, res) => {
       });
     }
 
+    const [apparray] = await db.execute({ sql: `select distinct app_acronym from application`, rowsAsArray: true });
+    if (!apparray.flat().includes(req.body.app_acronym)) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+
     if (typeof req.body.task_state != "string" || !states.includes(req.body.task_state.toLowerCase())) {
       return res.json({
         code: codes.wrongvalue,

@@ -72,10 +72,10 @@ try {
     }
 
     $body = @{
-        username    = $username
-        password    = ''
-        task_state  = 'open'
-        app_acronym = ''
+        username    = "*"
+        password    = $password
+        task_state  = $state
+        app_acronym = $acronym
         f           = "f"
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
