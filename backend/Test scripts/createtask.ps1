@@ -470,6 +470,31 @@ try {
         Write-Output "- acronym dne, code is $($response.code) "
     }
 
+    # visual test
+    Write-Output ""
+    Write-Output "automated tests done, check value of state from db"
+    Write-Output ""
+        
+    $body = @{
+        username         = $plusername
+        password         = $plpassword
+        task_app_acronym = $acronym
+        task_name        = $name
+        task_description = $description
+        task_notes       = $notes
+        task_plan        = $plan
+    } | ConvertTo-Json
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
+    Write-Output $response.task_id
+    Write-Output ""
+    Write-Output $response.code
+
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
+    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
+    Write-Output $response.task_id
+    Write-Output ""
+    Write-Output $response.code
 }
 catch {
     Write-Output "Error: Unable to reach API - $($_.Exception.Message)" 
