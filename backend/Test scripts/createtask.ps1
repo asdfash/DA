@@ -132,8 +132,8 @@ try {
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "C001") {
-        Write-Output "- unauthorised dealer, code is $($response.code)"
+    if ($response.code -ne "C003") {
+        Write-Output "- unauthorised user, code is $($response.code)"
     }
 
     # # transaction
