@@ -16,7 +16,14 @@ app.use(
 );
 
 app.use(express.json()); //Setup express to take in body data in json
-// app.use(cookieParser());
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    return res.json({ code: "B002" });
+  }
+  next()
+}); //handles any error in json
+
+app.use(cookieParser());
 
 // // routing
 // app.use(route);

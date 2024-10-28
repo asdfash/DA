@@ -1,9 +1,9 @@
 import express from "express";
 import { AddGroupController, addUserController, viewGroupsController, editEmailController, editPasswordController, editUserController, logoutController, viewProfileController, viewUsersController } from "./controllers/usermanagement.js";
-import { AddAppController, AddPlanController, addTaskController, createTaskController, demoteTaskController, EditAppController, editTaskController, getTaskByStateController, promoteTask2DoneController, promoteTaskController, ViewAppsController, viewPlanListController, ViewPlansController, ViewTaskController, ViewTasksController } from "./controllers/taskmanagement.js";
+import { AddAppController, AddPlanController, addTaskController, demoteTaskController, EditAppController, editTaskController, promoteTaskController, ViewAppsController, viewPlanListController, ViewPlansController, ViewTaskController, ViewTasksController } from "./controllers/taskmanagement.js";
 import { CheckCreatePermission, CheckGroup, CheckLogin, CheckTaskStatePermission, encrpytPassword, Login } from "./middleware/auth.js";
 import { validateEmail, validateGroupname, validatePassword, validateUsername, validateAdmin, validateSkipPassword, validateCreateAppFields, validateCreatePlan, validateTaskName, validateExistingApp, validateExistingPlan, stampTaskNotes, validateEditableAppFields } from "./middleware/fields.js";
-
+import { createTaskController,getTaskByStateController,promoteTask2DoneController } from "./controllers/api.js";
 //unprotected routes
 const route = express.Router();
 route.post("/login", Login, (req, res) => res.send("Logged in"));
