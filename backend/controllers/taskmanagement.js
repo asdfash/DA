@@ -180,7 +180,7 @@ export const promoteTaskController = async (req, res) => {
       );
 
       if (emails.flat().filter(email => email !== "").length) {
-        await transporter.sendMail({
+        transporter.sendMail({
           from: "tms@tms.com",
           to: emails.flat(),
           subject: "Task sent for approval",

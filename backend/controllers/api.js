@@ -316,18 +316,18 @@ export const promoteTask2DoneController = async (req, res) => {
       });
     }
 
-    if (!req.body.task_app_acronym || typeof req.body.task_app_acronym != "string" || req.body.task_app_acronym.length > maxlength.task_app_acronym) {
+    if (!req.body.task_id || typeof req.body.task_id != "string" || req.body.task_id.length > maxlength.task_id) {
       return res.json({
         code: codes.wrongvalue,
       });
     }
-    const [[]]
-    const [[app]] = await db.execute("select app_permit_create from application where app_acronym =?", [req.body.task_app_acronym]);
-    if (!app) {
+    const [[task]] = await db.execute("select task_app_acronym,task_notes from task where task_id=? and task_state='doing'", [req.body.task_id]);
+    if (!task) {
       return res.json({
         code: codes.wrongvalue,
       });
     }
+    const [[app]] = await db.execute("select app_permit_create,app_permit_done from application where app_acronym =?", [task.task_app_acronym]);
     if (!app.app_permit_create) {
       return res.json({
         code: codes.group,
@@ -339,6 +339,51 @@ export const promoteTask2DoneController = async (req, res) => {
         code: codes.group,
       });
     }
+
+    //transaction
+    const timestamp = new Date().toISOString().slice(0, 19).replace("T", " ");
+    if (req.body.task_notes) {
+      if (typeof req.body.task_notes != "string") {
+        return res.json({
+          code: codes.wrongvalue,
+        });
+      }
+      req.body.task_notes = `*************\n\n[${req.body.username}, doing , ${timestamp}(UTC)]\n\n${req.body.task_notes}`;
+    } else req.body.task_notes = "";
+    const notes = `*************\n\n[${req.body.username}, doing , ${timestamp}(UTC)]\n\n task promoted to done state \n\n${req.body.task_notes}\n\n${task.task_notes}`;
+    await db.execute(`UPDATE task SET task_state = 'done', task_notes = ?, task_owner = ? WHERE task_id = ?`, [notes, req.body.username, req.body.task_id]);
+    
+    const mailer = async group => {
+      if (group) {
+        try {
+          const [userarray] = await db.execute({ sql: "SELECT username FROM user_groups WHERE groupname = ?", rowsAsArray: true }, [group]);
+          const [emails] = await db.execute(
+            {
+              sql: `SELECT DISTINCT email FROM accounts WHERE username IN (${userarray
+                .flat()
+                .map(() => "?")
+                .join(",")})`,
+              rowsAsArray: true,
+            },
+            userarray.flat()
+          );
+
+          if (emails.flat().filter(email => email !== "").length) {
+            transporter.sendMail({
+              from: "tms@tms.com",
+              to: emails.flat(),
+              subject: "Task sent for approval",
+              text: `Hi user,\n\nA task: ${req.body.task_id} has been sent for approval. Please log in to TMS to approve or reject it.\nBest regards,\nTMS team\n\nThis is a computer-generated email. Please do not reply.`,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+
+    mailer(app.app_permit_done);
+
     return res.json({ code: "S000" });
   } catch (error) {
     console.log(error);
