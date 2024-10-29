@@ -113,6 +113,98 @@ try {
     Write-Output ""
 
     $body = @{
+        username         = ""
+        password         = $plpassword
+        task_app_acronym = $acronym
+        task_name        = $name
+        task_description = $description
+        task_notes       = $notes
+        task_plan        = $plan
+    } | ConvertTo-Json
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
+    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
+    if ($response.code -ne "C001") {
+        Write-Output "- username missing, code is $($response.code) "
+    }
+
+    $body = @{
+        username         = $plusername
+        password         = ""
+        task_app_acronym = $acronym
+        task_name        = $name
+        task_description = $description
+        task_notes       = $notes
+        task_plan        = $plan
+    } | ConvertTo-Json
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
+    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
+    if ($response.code -ne "C001") {
+        Write-Output "- password  missing, code is $($response.code) "
+    }
+
+    $body = @{
+        username         = 12345
+        password         = $plpassword
+        task_app_acronym = $acronym
+        task_name        = $name
+        task_description = $description
+        task_notes       = $notes
+        task_plan        = $plan
+    } | ConvertTo-Json
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
+    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
+    if ($response.code -ne "C001") {
+        Write-Output "- username wrong type, code is $($response.code) "
+    }
+
+    $body = @{
+        username         = $plusername
+        password         = 12345
+        task_app_acronym = $acronym
+        task_name        = $name
+        task_description = $description
+        task_notes       = $notes
+        task_plan        = $plan
+    } | ConvertTo-Json
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
+    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
+    if ($response.code -ne "C001") {
+        Write-Output "- password  wrong type, code is $($response.code) "
+    }
+
+
+    $body = @{
+        username         = "123456789012345678901234567890123456789012345678901"
+        password         = $plpassword
+        task_app_acronym = $acronym
+        task_name        = $name
+        task_description = $description
+        task_notes       = $notes
+        task_plan        = $plan
+    } | ConvertTo-Json
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
+    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
+    if ($response.code -ne "C001") {
+        Write-Output "- username too long, code is $($response.code) "
+    }
+
+    $body = @{
+        username         = $plusername
+        password         = "123456789012345678901234567890123456789012345678901"
+        task_app_acronym = $acronym
+        task_name        = $name
+        task_description = $description
+        task_notes       = $notes
+        task_plan        = $plan
+    } | ConvertTo-Json
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
+    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
+    if ($response.code -ne "C001") {
+        Write-Output "- password  too long, code is $($response.code) "
+    }
+
+
+    $body = @{
         username         = $plusername 
         password         = 'wrongpassword'
         task_app_acronym = $acronym
@@ -141,36 +233,7 @@ try {
     Write-Output "IAM Tests done, Testing Transaction. WIP, so non exhaustive"
     Write-Output ""
 
-    $body = @{
-        username         = 12345
-        password         = $plpassword
-        task_app_acronym = $acronym
-        task_name        = $name
-        task_description = $description
-        task_notes       = $notes
-        task_plan        = $plan
-    } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
-    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D001") {
-        Write-Output "- username wrong type, code is $($response.code) "
-    }
-
-    $body = @{
-        username         = $plusername
-        password         = 12345
-        task_app_acronym = $acronym
-        task_name        = $name
-        task_description = $description
-        task_notes       = $notes
-        task_plan        = $plan
-    } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
-    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D001") {
-        Write-Output "- password  wrong type, code is $($response.code) "
-    }
-
+    
     $body = @{
         username         = $plusername
         password         = $plpassword
@@ -246,35 +309,7 @@ try {
         Write-Output "- plan wrong type, code is $($response.code) "
     }
    
-    $body = @{
-        username         = "123456789012345678901234567890123456789012345678901"
-        password         = $plpassword
-        task_app_acronym = $acronym
-        task_name        = $name
-        task_description = $description
-        task_notes       = $notes
-        task_plan        = $plan
-    } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
-    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D001") {
-        Write-Output "- username too long, code is $($response.code) "
-    }
 
-    $body = @{
-        username         = $plusername
-        password         = "123456789012345678901234567890123456789012345678901"
-        task_app_acronym = $acronym
-        task_name        = $name
-        task_description = $description
-        task_notes       = $notes
-        task_plan        = $plan
-    } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
-    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D001") {
-        Write-Output "- password  too long, code is $($response.code) "
-    }
 
     $body = @{
         username         = $plusername
@@ -336,35 +371,7 @@ try {
         Write-Output "- plan too long, code is $($response.code) "
     }
 
-    $body = @{
-        username         = ""
-        password         = $plpassword
-        task_app_acronym = $acronym
-        task_name        = $name
-        task_description = $description
-        task_notes       = $notes
-        task_plan        = $plan
-    } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
-    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D001") {
-        Write-Output "- username missing, code is $($response.code) "
-    }
 
-    $body = @{
-        username         = $plusername
-        password         = ""
-        task_app_acronym = $acronym
-        task_name        = $name
-        task_description = $description
-        task_notes       = $notes
-        task_plan        = $plan
-    } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
-    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D001") {
-        Write-Output "- password  missing, code is $($response.code) "
-    }
 
     $body = @{
         username         = $plusername
@@ -468,6 +475,21 @@ try {
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "D001") {
         Write-Output "- acronym dne, code is $($response.code) "
+    }
+
+    $body = @{
+        username         = $plusername
+        password         = $plpassword
+        task_app_acronym = "invalid!"
+        task_name        = $name
+        task_description = $description
+        task_notes       = $notes
+        task_plan        = $plan
+    } | ConvertTo-Json
+    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
+    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
+    if ($response.code -ne "D001") {
+        Write-Output "- taskname invalid, code is $($response.code) "
     }
 
     # visual test
