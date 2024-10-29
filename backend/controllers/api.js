@@ -88,27 +88,10 @@ export const getTaskByStateController = async (req, res) => {
 
   try {
     //iam
-    if (!req.body.username) {
-      return res.json({
-        code: codes.wrongvalue,
-      });
-    }
 
-    if (typeof req.body.username != "string" || req.body.username.length > maxlength.username) {
+    if (typeof req.body.username != "string" || typeof req.body.password != "string") {
       return res.json({
-        code: codes.wrongvalue,
-      });
-    }
-
-    if (!req.body.password) {
-      return res.json({
-        code: codes.wrongvalue,
-      });
-    }
-
-    if (typeof req.body.password != "string" || req.body.password.length > maxlength.password) {
-      return res.json({
-        code: codes.wrongvalue,
+        code: codes.credential,
       });
     }
 

@@ -104,7 +104,7 @@ try {
 
     $body = @{
         username         = $username
-        password         = $password
+        password         = 12345
         task_state       = $state
         task_app_acronym = $acronym
     } | ConvertTo-Json
