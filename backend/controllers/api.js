@@ -3,20 +3,7 @@ import transporter from "../utils/mail.js";
 import bcrypt from "bcryptjs";
 
 /**
- * create task:
- *  - validate task description
- *  - validate task note
- *  - create task
- *  -- increment app rnumber
- *  -- rollback if fail
- *  - send {taskid, code}
- *
  *  * promote task 2 done:
- *  - validate url
- *  - validate body structure
- *  - validate username
- *  - validate password
- *  - validate user group
  *  - validate taskid
  *  - validate task notes
  *  - promote task
@@ -251,8 +238,8 @@ export const createTaskController = async (req, res) => {
     const connection = await db.getConnection();
     await connection.beginTransaction();
     try {
-      const task_id = `${req.body.task_app_acronym}_${rnumber + 1}`
-      await connection.execute("INSERT INTO `task` (`task_id`, `task_name`, `task_description` , `task_notes`, `task_plan`,task_app_acronym, `task_state`, `task_creator`, `task_owner`,`task_createdate`) VALUES (?,?,?,?,?,?,?,?,?,?); ", [task_id, req.body.task_name, req.body.task_description,notes, req.body.task_plan, req.body.task_app_acronym, "open", req.body.username, req.body.username, createdate]);
+      const task_id = `${req.body.task_app_acronym}_${rnumber + 1}`;
+      await connection.execute("INSERT INTO `task` (`task_id`, `task_name`, `task_description` , `task_notes`, `task_plan`,task_app_acronym, `task_state`, `task_creator`, `task_owner`,`task_createdate`) VALUES (?,?,?,?,?,?,?,?,?,?); ", [task_id, req.body.task_name, req.body.task_description, notes, req.body.task_plan, req.body.task_app_acronym, "open", req.body.username, req.body.username, createdate]);
       await connection.execute("update application set app_rnumber = ? where app_acronym = ? ", [rnumber + 1, req.body.task_app_acronym]);
       await connection.commit();
       return res.json({ task_id, code: codes.success });
@@ -270,5 +257,91 @@ export const createTaskController = async (req, res) => {
 };
 
 export const promoteTask2DoneController = async (req, res) => {
-  res.json({ code: "S000" });
+  const codes = {
+    urlextra: "A001",
+    bodytype: "B001",
+    bodyparam: "B002",
+    login: "C001",
+    group: "C003",
+    wrongvalue: "D001",
+    internalerror: "E004",
+    success: "S000",
+  };
+
+  const url = "/promotetask2done";
+  const objType = "application/json";
+  const mandatorykeys = ["username", "password", "task_id"];
+  const maxlength = {
+    username: 50,
+    password: 50,
+    task_id: 100,
+  };
+
+  //URL
+  if (req.url.toLowerCase() !== url) {
+    return res.json({
+      code: codes.urlextra,
+    });
+  }
+
+  //body
+  if (req.headers["content-type"] !== objType) {
+    return res.json({
+      code: codes.bodytype,
+    });
+  }
+
+  const keys = Object.keys(req.body);
+  for (const key of mandatorykeys) {
+    if (!keys.includes(key)) {
+      return res.json({
+        code: codes.bodyparam,
+      });
+    }
+  }
+
+  try {
+    //iam
+
+    if (typeof req.body.username != "string" || typeof req.body.password != "string") {
+      return res.json({
+        code: codes.login,
+      });
+    }
+
+    const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username || ""]);
+    if (!login || !bcrypt.compareSync(req.body.password, login.password) || !login.isActive) {
+      return res.json({
+        code: codes.login,
+      });
+    }
+
+    if (!req.body.task_app_acronym || typeof req.body.task_app_acronym != "string" || req.body.task_app_acronym.length > maxlength.task_app_acronym) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+    const [[]]
+    const [[app]] = await db.execute("select app_permit_create from application where app_acronym =?", [req.body.task_app_acronym]);
+    if (!app) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+    if (!app.app_permit_create) {
+      return res.json({
+        code: codes.group,
+      });
+    }
+    const [[{ count }]] = await db.execute("select count(*) as count from user_groups where username = ? and groupname = ?", [req.body.username, app.app_permit_create]);
+    if (count <= 0) {
+      return res.json({
+        code: codes.group,
+      });
+    }
+    return res.json({ code: "S000" });
+  } catch (error) {
+    console.log(error);
+    return res.json({ code: codes.internalerror });
+  }
 };
