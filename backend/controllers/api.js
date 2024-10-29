@@ -19,16 +19,6 @@ import bcrypt from "bcryptjs";
  *  -- rollback if fail
  *  - send {taskid, code}
  *
- * get task by state:
- *  - validate url
- *  - validate body structure
- *  - validate username
- *  - validate password
- *  - validate app acronym
- *  - validate task state
- *  - get task
- *  - send {array of tasks,code}
- *
  *  * promote task 2 done:
  *  - validate url
  *  - validate body structure
@@ -41,12 +31,13 @@ import bcrypt from "bcryptjs";
  *  - send email
  *  - send {code}
  */
+
 export const getTaskByStateController = async (req, res) => {
   const codes = {
     urlextra: "A001",
     bodytype: "B001",
     bodyparam: "B002",
-    credential: "C001",
+    login: "C001",
     wrongvalue: "D001",
     internalerror: "E004",
     success: "S000",
@@ -91,14 +82,14 @@ export const getTaskByStateController = async (req, res) => {
 
     if (typeof req.body.username != "string" || typeof req.body.password != "string") {
       return res.json({
-        code: codes.credential,
+        code: codes.login,
       });
     }
 
     const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username || ""]);
     if (!login || !bcrypt.compareSync(req.body.password, login.password) || !login.isActive) {
       return res.json({
-        code: codes.credential,
+        code: codes.login,
       });
     }
 
@@ -146,7 +137,8 @@ export const createTaskController = async (req, res) => {
     urlextra: "A001",
     bodytype: "B001",
     bodyparam: "B002",
-    credential: "C001",
+    login: "C001",
+    group: "C003",
     wrongvalue: "D001",
     internalerror: "E004",
     success: "S000",
@@ -181,7 +173,6 @@ export const createTaskController = async (req, res) => {
   const keys = Object.keys(req.body);
   for (const key of mandatorykeys) {
     if (!keys.includes(key)) {
-        console.log(key)
       return res.json({
         code: codes.bodyparam,
       });
@@ -190,38 +181,64 @@ export const createTaskController = async (req, res) => {
 
   try {
     //iam
-    if (!req.body.username) {
-      return res.json({
-        code: codes.wrongvalue,
-      });
-    }
 
-    if (typeof req.body.username != "string" || req.body.username.length > maxlength.username) {
+    if (typeof req.body.username != "string" || typeof req.body.password != "string") {
       return res.json({
-        code: codes.wrongvalue,
-      });
-    }
-
-    if (!req.body.password) {
-      return res.json({
-        code: codes.wrongvalue,
-      });
-    }
-
-    if (typeof req.body.password != "string" || req.body.password.length > maxlength.password) {
-      return res.json({
-        code: codes.wrongvalue,
+        code: codes.login,
       });
     }
 
     const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username || ""]);
     if (!login || !bcrypt.compareSync(req.body.password, login.password) || !login.isActive) {
       return res.json({
-        code: codes.credential,
+        code: codes.login,
+      });
+    }
+
+    if (!req.body.task_app_acronym || typeof req.body.task_app_acronym != "string" || req.body.task_app_acronym.length > maxlength.task_app_acronym) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+
+    const [[app]] = await db.execute("select app_permit_create from application where app_acronym =?", [req.body.task_app_acronym]);
+    if (!app) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+    if (!app.app_permit_create) {
+      return res.json({
+        code: codes.group,
+      });
+    }
+    const [[{ count }]] = await db.execute("select count(*) as count from user_groups where username = ? and groupname = ?", [req.body.username, app.app_permit_create]);
+    if (count <= 0) {
+      return res.json({
+        code: codes.group,
       });
     }
 
     //transaction
+    const nameregex = /^[a-zA-Z0-9 ]{1,50}$/;
+    if (typeof req.body.task_name != "string" || !nameregex.test(req.body.name)) {
+      return res.json({
+        code: codes.wrongvalue,
+      });
+    }
+
+    if (req.body.task_plan) {
+      const [planarray] = await db.execute({ sql: `select distinct plan_mvp_name from plan where plan_app_acronym = ?`, rowsAsArray: true }, [req.body.task_app_acronym]);
+      if (!planarray.flat().includes(req.body.task_plan)) {
+        return res.json({
+          code: codes.wrongvalue,
+        });
+      }
+    }
+
+    
+
+
   } catch (error) {
     console.log(error);
     return res.json({ code: codes.internalerror });

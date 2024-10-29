@@ -99,7 +99,7 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/gettaskbystate" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "C001") {
-        Write-Output "- acronym wrong type, code is $($response.code)"
+        Write-Output "- username wrong type, code is $($response.code)"
     }
 
     $body = @{
