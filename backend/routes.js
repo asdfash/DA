@@ -9,6 +9,11 @@ const route = express.Router();
 route.post("/login", Login, (req, res) => res.send("Logged in"));
 route.get("/verify", CheckLogin, (req, res) => res.send("logged in"));
 
+// assignemnt 3
+route.post("/createtask",createTaskController)
+route.post("/gettaskbystate",getTaskByStateController)
+route.patch("/promotetask2done",promoteTask2DoneController)
+
 //user
 route.use(CheckLogin);
 route.get("/logout", logoutController);
@@ -40,12 +45,5 @@ route.post("/addUser", validateUsername, validatePassword, encrpytPassword, vali
 route.patch("/editUser", validateSkipPassword, validatePassword, encrpytPassword, validateEmail, validateAdmin, editUserController);
 
 export default route;
-
-const apiroute = express.Router();
-apiroute.post("/createtask",createTaskController)
-apiroute.post("/gettaskbystate",getTaskByStateController)
-apiroute.patch("/promotetask2done",promoteTask2DoneController)
-
-export { apiroute };
 
 

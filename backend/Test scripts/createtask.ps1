@@ -3,9 +3,8 @@ $plusername = "testpl"
 $plpassword = "abc123!!"
 $devusername = 'testdev'
 $devpassword = "abc123!!"
-$acronym = "zoo"
+$acronym = "a"
 $name = "new"
-$description = 'doing'
 $notes = 'asdfasdf'
 $plan = 'sprint1'
 
@@ -82,7 +81,7 @@ try {
         username         = $plusername
         password         = $plpassword
         task_app_acronym = $acronym
-        task_name        = $name
+        task_name        = "no optional keys"
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -95,7 +94,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = 'extra keys'
         task_notes       = $notes
         task_plan        = $plan
         f                = "f"
@@ -117,7 +116,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = "username missing"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -132,7 +131,7 @@ try {
         password         = ""
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = "password missing"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -147,7 +146,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = "username wrong type"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -162,7 +161,7 @@ try {
         password         = 12345
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = "password wrong type"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -178,7 +177,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = "username too long"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -193,7 +192,7 @@ try {
         password         = "123456789012345678901234567890123456789012345678901"
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description ="password  too long"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -209,6 +208,7 @@ try {
         password         = 'wrongpassword'
         task_app_acronym = $acronym
         task_name        = $name
+        task_description = "Invalid credentials"
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -221,6 +221,7 @@ try {
         password         = $devpassword
         task_app_acronym = $acronym
         task_name        = $name
+        task_description = "unauthorised user"
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
@@ -239,7 +240,7 @@ try {
         password         = $plpassword
         task_app_acronym = 12345
         task_name        = $name
-        task_description = $description
+        task_description = "acronym wrong type"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -254,7 +255,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = 12345
-        task_description = $description
+        task_description = "taskname wrong type"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -270,7 +271,7 @@ try {
         task_app_acronym = $acronym
         task_name        = $name
         task_description = 12345
-        task_notes       = $notes
+        task_notes       = "description wrong type"
         task_plan        = $plan
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
@@ -284,7 +285,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = "notes wrong type"
         task_notes       = 12345
         task_plan        = $plan
     } | ConvertTo-Json
@@ -299,7 +300,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = "plan wrong type"
         task_notes       = $notes
         task_plan        = 12345
     } | ConvertTo-Json
@@ -316,7 +317,7 @@ try {
         password         = $plpassword
         task_app_acronym = "123456789012345678901234567890123456789012345678901"
         task_name        = $name
-        task_description = $description
+        task_description = "acronym too long"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -331,7 +332,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = "123456789012345678901234567890123456789012345678901"
-        task_description = $description
+        task_description = "taskname too long"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -347,7 +348,7 @@ try {
         task_app_acronym = $acronym
         task_name        = $name
         task_description = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec."
-        task_notes       = $notes
+        task_notes       = "description too long"
         task_plan        = $plan
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
@@ -361,7 +362,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = "plan too long"
         task_notes       = $notes
         task_plan        = "123456789012345678901234567890123456789012345678901"
     } | ConvertTo-Json
@@ -378,7 +379,7 @@ try {
         password         = $plpassword
         task_app_acronym = ""
         task_name        = $name
-        task_description = $description
+        task_description = "acronym missing"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -393,7 +394,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = ""
-        task_description = $description
+        task_description = "taskname missing"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -409,7 +410,7 @@ try {
         task_app_acronym = $acronym
         task_name        = $name
         task_description = ""
-        task_notes       = $notes
+        task_notes       = "description missing"
         task_plan        = $plan
     } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
@@ -423,7 +424,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = "notes missing"
         task_notes       = ""
         task_plan        = $plan
     } | ConvertTo-Json
@@ -438,7 +439,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = "plan missing"
         task_notes       = $notes
         task_plan        = ""
     } | ConvertTo-Json
@@ -453,7 +454,7 @@ try {
         password         = $plpassword
         task_app_acronym = "this should be DNE!"
         task_name        = $name
-        task_description = $description
+        task_description = "acronym dne"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -466,9 +467,9 @@ try {
     $body = @{
         username         = $plusername
         password         = $plpassword
-        task_app_acronym = "invalid!"
-        task_name        = $name
-        task_description = $description
+        task_app_acronym = $acronym
+        task_name        = "invalid!"
+        task_description = "taskname invalid"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -488,7 +489,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = $description
+        task_description = "visual"
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json

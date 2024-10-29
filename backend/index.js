@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import route from "./routes.js";
-import { apiroute } from "./routes.js";
 
 const app = express();
 const port = process.env.BACKENDPORT || 5000;
@@ -20,14 +19,14 @@ app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
     return res.json({ code: "B002" });
   }
-  next()
+  next();
 }); //handles any error in json
 
 app.use(cookieParser());
 
 // // routing
 // app.use(route);
-app.use(apiroute);
+app.use(route);
 
 /** App listening on port */
 app.listen(port, () => {

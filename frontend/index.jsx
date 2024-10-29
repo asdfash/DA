@@ -20,7 +20,7 @@ import Tasklist from "./components/Tasklist";
 
 //axios defaults
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "http://localhost:3000";
 
 const App = () => {
   const [notification, setNotification] = useState({ msg: "", duration: 1500, success: true });
