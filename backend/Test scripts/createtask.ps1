@@ -330,7 +330,7 @@ try {
         username         = $plusername
         password         = $plpassword
         task_app_acronym = $acronym
-        task_name        = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec."
+        task_name        = "123456789012345678901234567890123456789012345678901"
         task_description = $description
         task_notes       = $notes
         task_plan        = $plan
@@ -346,7 +346,7 @@ try {
         password         = $plpassword
         task_app_acronym = $acronym
         task_name        = $name
-        task_description = "123456789012345678901234567890123456789012345678901"
+        task_description = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec."
         task_notes       = $notes
         task_plan        = $plan
     } | ConvertTo-Json
@@ -448,20 +448,6 @@ try {
         Write-Output "- plan missing, code is $($response.code) "
     }
 
-    $body = @{
-        username         = $plusername
-        password         = $plpassword
-        task_app_acronym = $acronym
-        task_name        = "this should be DNE!"
-        task_description = $description
-        task_notes       = $notes
-        task_plan        = $plan
-    } | ConvertTo-Json
-    $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
-    if ($response -is [string]) { $response = $response | ConvertFrom-Json }
-    if ($response.code -ne "D001") {
-        Write-Output "- taskname dne, code is $($response.code) "
-    }
     $body = @{
         username         = $plusername
         password         = $plpassword

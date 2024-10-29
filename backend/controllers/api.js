@@ -4,16 +4,8 @@ import bcrypt from "bcryptjs";
 
 /**
  * create task:
- *  - validate url
- *  - validate body structure
- *  - validate username
- *  - validate password
- *  - validate user group
- *  - validate task app acronym
- *  - validate task name
  *  - validate task description
  *  - validate task note
- *  - validate task plan
  *  - create task
  *  -- increment app rnumber
  *  -- rollback if fail
@@ -221,7 +213,7 @@ export const createTaskController = async (req, res) => {
 
     //transaction
     const nameregex = /^[a-zA-Z0-9 ]{1,50}$/;
-    if (typeof req.body.task_name != "string" || !nameregex.test(req.body.name)) {
+    if (typeof req.body.task_name != "string" || !nameregex.test(req.body.task_name)) {
       return res.json({
         code: codes.wrongvalue,
       });
@@ -229,22 +221,52 @@ export const createTaskController = async (req, res) => {
 
     if (req.body.task_plan) {
       const [planarray] = await db.execute({ sql: `select distinct plan_mvp_name from plan where plan_app_acronym = ?`, rowsAsArray: true }, [req.body.task_app_acronym]);
-      if (!planarray.flat().includes(req.body.task_plan)) {
+      if (typeof req.body.task_plan !== "string" || !planarray.flat().includes(req.body.task_plan)) {
         return res.json({
           code: codes.wrongvalue,
         });
       }
+    } else req.body.task_plan = "";
+
+    if (req.body.task_description) {
+      if (typeof req.body.task_description != "string" || req.body.task_description.length > maxlength.task_description) {
+        return res.json({
+          code: codes.wrongvalue,
+        });
+      }
+    } else req.body.task_description = "";
+    const timestamp = new Date().toISOString().slice(0, 19).replace("T", " ");
+    let notes = `*************\n\n[${req.body.username}, - , ${timestamp}(UTC)]\n\n task promoted to open state \n\n`;
+    if (req.body.task_notes) {
+      if (typeof req.body.task_notes != "string") {
+        return res.json({
+          code: codes.wrongvalue,
+        });
+      }
+      notes = `${notes}*************\n\n[${req.body.username}, - , ${timestamp}(UTC)]\n\n${req.body.task_notes}`;
     }
+    const createdate = timestamp.slice(0, 10);
 
-    
-
-
+    const [[{ rnumber }]] = await db.execute("select app_rnumber as rnumber from application where app_acronym =?", [req.body.task_app_acronym]);
+    const connection = await db.getConnection();
+    await connection.beginTransaction();
+    try {
+      const task_id = `${req.body.task_app_acronym}_${rnumber + 1}`
+      await connection.execute("INSERT INTO `task` (`task_id`, `task_name`, `task_description` , `task_notes`, `task_plan`,task_app_acronym, `task_state`, `task_creator`, `task_owner`,`task_createdate`) VALUES (?,?,?,?,?,?,?,?,?,?); ", [task_id, req.body.task_name, req.body.task_description,notes, req.body.task_plan, req.body.task_app_acronym, "open", req.body.username, req.body.username, createdate]);
+      await connection.execute("update application set app_rnumber = ? where app_acronym = ? ", [rnumber + 1, req.body.task_app_acronym]);
+      await connection.commit();
+      return res.json({ task_id, code: codes.success });
+    } catch (error) {
+      await connection.rollback();
+      console.log(error);
+      return res.json({ code: codes.internalerror });
+    } finally {
+      connection.release();
+    }
   } catch (error) {
     console.log(error);
     return res.json({ code: codes.internalerror });
   }
-
-  res.json({ code: codes.success });
 };
 
 export const promoteTask2DoneController = async (req, res) => {
