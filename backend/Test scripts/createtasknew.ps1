@@ -23,27 +23,27 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/CreateTask?"
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "A001") {
-        Write-Output "- url special char, code is $($response.code) but expected is A001"
+        Write-Output "- url special char, code is $($response.code) but expected is A001" -ForegroundColor Red
     }
 
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/CreateTask"
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -eq "A001") {
-        Write-Output "- url camelcase, code is $($response.code) but expected is not A001"
+        Write-Output "- url camelcase, code is $($response.code) but expected is not A001" -ForegroundColor Red
     }
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/CREATETASK"
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -eq "A001") {
-        Write-Output "- url uppercase, code is $($response.code) but expected is not A001"
+        Write-Output "- url uppercase, code is $($response.code) but expected is not A001" -ForegroundColor Red
     }
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask"
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -eq "A001") {
-        Write-Output "- url lowercase, code is $($response.code) but expected is not A001"
+        Write-Output "- url lowercase, code is $($response.code) but expected is not A001" -ForegroundColor Red
     }
     try {
         $response = Invoke-RestMethod -Method 'Get' -Uri "http://localhost:3000/createtask"
-        Write-Output "- request type get, code is $($response.code) but expected is nothing"
+        Write-Output "- request type get, code is $($response.code) but expected is nothing" -ForegroundColor Red
     }
     catch {
     }
@@ -56,28 +56,28 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask"
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "B001") {
-        Write-Output "- missing body, code is $($response.code) but expected is B001"
+        Write-Output "- missing body, code is $($response.code) but expected is B001" -ForegroundColor Red
     }
 
     $body = @{f = 'f' } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/javascript" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "B001") {
-        Write-Output "- wrong body type, code is $($response.code) but expected is B001"
+        Write-Output "- wrong body type, code is $($response.code) but expected is B001" -ForegroundColor Red
     }
 
     $body = @{} | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "B002") {
-        Write-Output "- No keys, code is $($response.code) but expected is B002"
+        Write-Output "- No keys, code is $($response.code) but expected is B002" -ForegroundColor Red
     }
 
     $body = @{username = $plusername } | ConvertTo-Json
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "B002") {
-        Write-Output "- Partial keys, code is $($response.code) but expected is B002"
+        Write-Output "- Partial keys, code is $($response.code) but expected is B002" -ForegroundColor Red
     }
 
     $body = @{
@@ -89,7 +89,7 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -ne "S000") {
-        Write-Output "- no optional keys, code is $($response.code) but expected is S000"
+        Write-Output "- no optional keys, code is $($response.code) but expected is S000" -ForegroundColor Red
     }
 
     $body = @{
@@ -105,7 +105,7 @@ try {
     $response = Invoke-RestMethod -Method 'Post' -Uri "http://localhost:3000/createtask" -ContentType "application/json" -Body $Body
     if ($response -is [string]) { $response = $response | ConvertFrom-Json }
     if ($response.code -eq "B002") {
-        Write-Output "- extra keys, code is $($response.code) but expected is not B002"
+        Write-Output "- extra keys, code is $($response.code) but expected is not B002" -ForegroundColor Red
     }
 }
     catch {
