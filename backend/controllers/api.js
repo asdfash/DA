@@ -2,15 +2,6 @@ import db from "../utils/mysql.js";
 import transporter from "../utils/mail.js";
 import bcrypt from "bcryptjs";
 
-/**
- *  * promote task 2 done:
- *  - validate taskid
- *  - validate task notes
- *  - promote task
- *  - send email
- *  - send {code}
- */
-
 export const getTaskByStateController = async (req, res) => {
   const codes = {
     urlextra: "A001",
@@ -64,7 +55,7 @@ export const getTaskByStateController = async (req, res) => {
         code: codes.login,
       });
     }
-
+    
     const [[login]] = await db.execute("SELECT * from `accounts` WHERE `username` = ?", [req.body.username || ""]);
     if (!login || !bcrypt.compareSync(req.body.password, login.password) || !login.isActive) {
       return res.json({
@@ -134,7 +125,6 @@ export const createTaskController = async (req, res) => {
     task_description: 255,
     task_plan: 50,
   };
-
   //URL
   if (req.url.toLowerCase() !== url) {
     return res.json({
@@ -148,7 +138,7 @@ export const createTaskController = async (req, res) => {
       code: codes.bodytype,
     });
   }
-
+  
   const keys = Object.keys(req.body);
   for (const key of mandatorykeys) {
     if (!keys.includes(key)) {
@@ -175,18 +165,22 @@ export const createTaskController = async (req, res) => {
     }
 
     if (!req.body.task_app_acronym || typeof req.body.task_app_acronym != "string" || req.body.task_app_acronym.length > maxlength.task_app_acronym) {
+      console.log(1)
       return res.json({
         code: codes.wrongvalue,
       });
     }
 
     const [[app]] = await db.execute("select app_permit_create from application where app_acronym =?", [req.body.task_app_acronym]);
+    
     if (!app) {
+      console.log(2)
       return res.json({
         code: codes.wrongvalue,
       });
     }
     if (!app.app_permit_create) {
+
       return res.json({
         code: codes.group,
       });
@@ -201,6 +195,7 @@ export const createTaskController = async (req, res) => {
     //transaction
     const nameregex = /^[a-zA-Z0-9 ]{1,50}$/;
     if (typeof req.body.task_name != "string" || !nameregex.test(req.body.task_name)) {
+      console.log(3)
       return res.json({
         code: codes.wrongvalue,
       });
@@ -352,7 +347,7 @@ export const promoteTask2DoneController = async (req, res) => {
     } else req.body.task_notes = "";
     const notes = `*************\n\n[${req.body.username}, doing , ${timestamp}(UTC)]\n\n task promoted to done state \n\n${req.body.task_notes}\n\n${task.task_notes}`;
     await db.execute(`UPDATE task SET task_state = 'done', task_notes = ?, task_owner = ? WHERE task_id = ?`, [notes, req.body.username, req.body.task_id]);
-    
+
     const mailer = async group => {
       if (group) {
         try {
