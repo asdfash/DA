@@ -13,6 +13,9 @@ route.get("/verify", CheckLogin, (req, res) => res.send("logged in"));
 route.post("/createtask",createTaskController)
 route.post("/gettaskbystate",getTaskByStateController)
 route.patch("/promotetask2done",promoteTask2DoneController)
+route.use((req,res)=>{
+    res.json({code:"A001"})
+})
 
 //user
 route.use(CheckLogin);

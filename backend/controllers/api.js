@@ -149,8 +149,8 @@ export const createTaskController = async (req, res) => {
   }
 
   try {
-    //iam
 
+    //iam
     if (typeof req.body.username != "string" || typeof req.body.password != "string") {
       return res.json({
         code: codes.login,
@@ -318,13 +318,14 @@ export const promoteTask2DoneController = async (req, res) => {
         code: codes.wrongvalue,
       });
     }
-    const [[app]] = await db.execute("select app_permit_create,app_permit_done from application where app_acronym =?", [task.task_app_acronym]);
-    if (!app.app_permit_create) {
+    const [[app]] = await db.execute("select app_permit_doing,app_permit_done from application where app_acronym =?", [task.task_app_acronym]);
+    
+    if (!app.app_permit_doing) {
       return res.json({
         code: codes.group,
       });
     }
-    const [[{ count }]] = await db.execute("select count(*) as count from user_groups where username = ? and groupname = ?", [req.body.username, app.app_permit_create]);
+    const [[{ count }]] = await db.execute("select count(*) as count from user_groups where username = ? and groupname = ?", [req.body.username, app.app_permit_doing]);
     if (count <= 0) {
       return res.json({
         code: codes.group,
@@ -344,7 +345,7 @@ export const promoteTask2DoneController = async (req, res) => {
     const notes = `*************\n\n[${req.body.username}, doing , ${timestamp}(UTC)]\n\n task promoted to done state \n\n${req.body.task_notes}\n\n${task.task_notes}`;
     await db.execute(`UPDATE task SET task_state = 'done', task_notes = ?, task_owner = ? WHERE task_id = ?`, [notes, req.body.username, req.body.task_id]);
 
-    const [userarray] = await db.execute({ sql: "SELECT username FROM user_groups WHERE groupname = ?", rowsAsArray: true }, [group]);
+    const [userarray] = await db.execute({ sql: "SELECT username FROM user_groups WHERE groupname = ?", rowsAsArray: true }, [app.app_permit_done]);
     const [emails] = await db.execute(
       {
         sql: `SELECT DISTINCT email FROM accounts WHERE username IN (${userarray
