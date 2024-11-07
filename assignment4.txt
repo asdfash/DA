@@ -1,0 +1,141 @@
+a4
+
+know diff between vm and container
+
+vm
+- vm engine ( VMware, kvm , hyperv, etc)
+- run on os (windows, Linux, unix,) or baremetal (VMware exsi)
+
+on top of enginer run vm
+local os (windows, Linux)
+
+on top of os
+app lib
+ then app
+
+is big compared to container:
+
+
+container engine (docker, portman, cryo etc)
+run on os only (windows, Linux)
+
+container image (ONLY LINUX BASE)
+- app lib
+-app
+- Linux interface (access host os resrouces through container engine)
+- dot net core lib can be used to program dot net apps (dotnet core 2xx)
+	- no gui
+
+we operate in air gap env( no internet)
+0. internet
+1. dev env (e.g redzone)
+2. uat staging product (camp)
+
+
+procedure
+use hard drive/dvd to travel between airgap
+how does docker work?
+daemon looks for intrsuction for user
+- parts in daemon
+	cache workspace
+workspace has local repo (stores container images)
+	1. base image
+	2. app image
+transform execution runtime into application image
+
+user uses docker build
+expects a docker file, contains:
+- base image
+	- docker checks: 1. workspace image 2. cache 3. docker hub
+- app info ( similar to bash script, but 'run' in front)
+- dockerignore
+docker build only works current folder and below
+
+after docker build, docker run
+- -d -p --env, container name, aci
+	- container name will be autogen if not, don't let that happen
+
+
+prepare dev env\
+- transport => cater to security
+ -- look at fingerprint (sha256)
+ -- compress files with password
+ --- send through 2 medium or 2 persons
+
+dev and test - > deliver to uat/staging/prod
+1. container
+- register a personal email with dockerhub registry
+- docker pull node -> node is pulled into local repo
+- docker save node -> node is saved into .tar
+
+
+2. app
+package.json: all dependency: true => everything loaded in npm install
+npm install => create nodemodule folder with modules
+npm pack => will make .tgz with package.json with node module 
+
+jfrog artifactory
+
+App image will be published
+
+DEV
+1. extract
+2. verify
+3. load
+ a. jfrog artifactoy
+ b. container
+  - docker load path//to//node (TRY)
+
+4. dev and test
+5. docker build
+ a. dockerfile (very diff)
+    - base image
+   - workdir /app
+   - instruction (npm install .tgz file) => /app / nodemodules /3api/ nodmodules
+6. ...
+7. check valid package.json file
+ - run comp package.json with /app / nodemodules /3api/ nodmodules if yes exit else continue
+8. dockerignore file
+req = run dockerfile as non system user => back up with url link to official site
+9. test
+ - docker run .env filec ( note that itll change in prod)
+10. docker save api
+11. transport api + env => release eng will change value
+- note .docker run will fail if env file got space
+
+PROD
+1. extract
+2. load
+3. docker run env file (env file changed by release engineer
+4. secrets store in password vault (e.g cyberark) => use respective cert
+
+
+
+
+
+
+1 slide on overall
+1 slide detail dockerfile ( fill up params for each commands)
+
+
+proj requiments will be diff
+
+
+
+
+
+
+agenda
+1. container overview
+ - docker (how it work - dockerfile etc)
+2. airgap env
+ -  abc - dockerfile
+3. base image selection criteria (size, security => cve)
+ -- severity could be critical high med low => need assess whether vulnerability applies to app
+ -- node version odd
+ => show proof for everitihing
+4. conclusion
+ - which image we used
+
+
+
