@@ -8,3 +8,8 @@ SQLDB=nodelogin
 #Session
 TOKENHOURS=2
 TOKENSECRET=tokensecret
+#Mail
+MAILHOST=smtp.ethereal.email
+MAILPORT=587
+MAILUSER=esmeralda.mohr30@ethereal.email
+MAILPW=JdtVMJrBy8QNcFu5KH
