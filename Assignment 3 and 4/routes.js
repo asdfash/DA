@@ -1,5 +1,5 @@
 import express from "express";
-import { createTaskController, getTaskByStateController, promoteTask2DoneController } from "./controllers/api.js";
+import { createTaskController, getTaskByStateController, promoteTask2DoneController } from "./api.js";
 //unprotected routes
 const route = express.Router();
 

@@ -1,36 +1,29 @@
-import db from "../utils/mysql.js";
-import transporter from "../utils/mail.js";
+import db from "./utils/mysql.js";
+import transporter from "./utils/mail.js";
 import bcrypt from "bcryptjs";
 
-export const getTaskByStateController = async (req, res) => {
-  const codes = {
-    urlextra: "A001",
-    bodytype: "B001",
-    bodyparam: "B002",
-    login: "C001",
-    wrongvalue: "D001",
-    internalerror: "E004",
-    success: "S000",
-  };
+const codes = {
+  urlextra: "A001",
+  bodytype: "B001",
+  bodyparam: "B002",
+  login: "C001",
+  group: "C003",
+  wrongvalue: "D001",
+  internalerror: "E004",
+  success: "S000",
+};
 
-  const url = "/gettaskbystate";
-  const objType = "application/json";
-  const mandatorykeys = ["username", "password", "task_app_acronym", "task_state"];
-  const states = ["open", "todo", "doing", "done", "closed"];
-  const maxlength = {
-    username: 50,
-    password: 50,
-    task_app_acronym: 50,
-    task_state: 10,
-  };
-
+const urlMiddleware = url => (req, res) => {
   //URL
   if (req.url.toLowerCase() !== url) {
     return res.json({
       code: codes.urlextra,
     });
   }
+};
 
+const bodymiddleware = mandatorykeys => (req, res) => {
+  const objType = "application/json";
   //body
   if (req.headers["content-type"] !== objType) {
     return res.json({
@@ -46,6 +39,21 @@ export const getTaskByStateController = async (req, res) => {
       });
     }
   }
+};
+
+export const getTaskByStateController = async (req, res) => {
+  const url = "/gettaskbystate";
+  const mandatorykeys = ["username", "password", "task_app_acronym", "task_state"];
+  const states = ["open", "todo", "doing", "done", "closed"];
+  const maxlength = {
+    username: 50,
+    password: 50,
+    task_app_acronym: 50,
+    task_state: 10,
+  };
+
+  urlMiddleware(url);
+  bodymiddleware(mandatorykeys);
 
   try {
     //iam
@@ -103,19 +111,7 @@ export const getTaskByStateController = async (req, res) => {
 };
 
 export const createTaskController = async (req, res) => {
-  const codes = {
-    urlextra: "A001",
-    bodytype: "B001",
-    bodyparam: "B002",
-    login: "C001",
-    group: "C003",
-    wrongvalue: "D001",
-    internalerror: "E004",
-    success: "S000",
-  };
-
   const url = "/createtask";
-  const objType = "application/json";
   const mandatorykeys = ["username", "password", "task_app_acronym", "task_name"];
   const maxlength = {
     username: 50,
@@ -125,31 +121,11 @@ export const createTaskController = async (req, res) => {
     task_description: 255,
     task_plan: 50,
   };
-  //URL
-  if (req.url.toLowerCase() !== url) {
-    return res.json({
-      code: codes.urlextra,
-    });
-  }
 
-  //body
-  if (req.headers["content-type"] !== objType) {
-    return res.json({
-      code: codes.bodytype,
-    });
-  }
-
-  const keys = Object.keys(req.body);
-  for (const key of mandatorykeys) {
-    if (!keys.includes(key)) {
-      return res.json({
-        code: codes.bodyparam,
-      });
-    }
-  }
+  urlMiddleware(url);
+  bodymiddleware(mandatorykeys);
 
   try {
-
     //iam
     if (typeof req.body.username != "string" || typeof req.body.password != "string") {
       return res.json({
@@ -260,7 +236,6 @@ export const promoteTask2DoneController = async (req, res) => {
   };
 
   const url = "/promotetask2done";
-  const objType = "application/json";
   const mandatorykeys = ["username", "password", "task_id"];
   const maxlength = {
     username: 50,
@@ -268,28 +243,8 @@ export const promoteTask2DoneController = async (req, res) => {
     task_id: 100,
   };
 
-  //URL
-  if (req.url.toLowerCase() !== url) {
-    return res.json({
-      code: codes.urlextra,
-    });
-  }
-
-  //body
-  if (req.headers["content-type"] !== objType) {
-    return res.json({
-      code: codes.bodytype,
-    });
-  }
-
-  const keys = Object.keys(req.body);
-  for (const key of mandatorykeys) {
-    if (!keys.includes(key)) {
-      return res.json({
-        code: codes.bodyparam,
-      });
-    }
-  }
+  urlMiddleware(url);
+  bodymiddleware(mandatorykeys);
 
   try {
     //iam
@@ -319,7 +274,7 @@ export const promoteTask2DoneController = async (req, res) => {
       });
     }
     const [[app]] = await db.execute("select app_permit_doing,app_permit_done from application where app_acronym =?", [task.task_app_acronym]);
-    
+
     if (!app.app_permit_doing) {
       return res.json({
         code: codes.group,
