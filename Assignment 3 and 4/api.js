@@ -224,17 +224,6 @@ export const createTaskController = async (req, res) => {
 };
 
 export const promoteTask2DoneController = async (req, res) => {
-  const codes = {
-    urlextra: "A001",
-    bodytype: "B001",
-    bodyparam: "B002",
-    login: "C001",
-    group: "C003",
-    wrongvalue: "D001",
-    internalerror: "E004",
-    success: "S000",
-  };
-
   const url = "/promotetask2done";
   const mandatorykeys = ["username", "password", "task_id"];
   const maxlength = {
