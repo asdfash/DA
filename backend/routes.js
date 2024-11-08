@@ -3,19 +3,11 @@ import { AddGroupController, addUserController, viewGroupsController, editEmailC
 import { AddAppController, AddPlanController, addTaskController, demoteTaskController, EditAppController, editTaskController, promoteTaskController, ViewAppsController, viewPlanListController, ViewPlansController, ViewTaskController, ViewTasksController } from "./controllers/taskmanagement.js";
 import { CheckCreatePermission, CheckGroup, CheckLogin, CheckTaskStatePermission, encrpytPassword, Login } from "./middleware/auth.js";
 import { validateEmail, validateGroupname, validatePassword, validateUsername, validateAdmin, validateSkipPassword, validateCreateAppFields, validateCreatePlan, validateTaskName, validateExistingApp, validateExistingPlan, stampTaskNotes, validateEditableAppFields } from "./middleware/fields.js";
-import { createTaskController,getTaskByStateController,promoteTask2DoneController } from "./controllers/api.js";
+
 //unprotected routes
 const route = express.Router();
 route.post("/login", Login, (req, res) => res.send("Logged in"));
 route.get("/verify", CheckLogin, (req, res) => res.send("logged in"));
-
-// assignemnt 3
-route.post("/createtask",createTaskController)
-route.post("/gettaskbystate",getTaskByStateController)
-route.patch("/promotetask2done",promoteTask2DoneController)
-route.use((req,res)=>{
-    res.json({code:"A001"})
-})
 
 //user
 route.use(CheckLogin);
