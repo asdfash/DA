@@ -1,10 +1,12 @@
-FROM node:20
+FROM node:20-alpine
 ENV NODE_ENV=production
 WORKDIR /app
-COPY package*.json .
-RUN npm install
+COPY ./assignment-1.0.0.tgz .
+RUN npm install --production --silent assignment-1.0.0.tgz
 COPY . .
-RUN adduser -S -D -H -u 1001 -s /bin/ash appuser
+RUN cmp node_modules/assignment/package.json package.json && \
+chown -R node /app && \
+chmod -R 577 /app
+USER node
 EXPOSE 3000
-USER appuser
-CMD ["node","index.js"]
+CMD ["node", "index.js"]

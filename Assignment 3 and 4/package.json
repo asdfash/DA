@@ -2,9 +2,6 @@
   "name": "assignment",
   "version": "1.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "node --env-file=.devenv index.js"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {

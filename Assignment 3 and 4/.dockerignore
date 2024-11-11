@@ -1,6 +1,6 @@
 **/.classpath
 **/.dockerignore
-**/.env
+**/*.env
 **/.git
 **/.gitignore
 **/.project
@@ -20,7 +20,7 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+tests/
+**/vscode.bat
 LICENSE
 README.md
-tests/
-tests/**

@@ -9,3 +9,7 @@
 */.vscode-test
 */.vscode
 
+# tarballs
+**.tgz
+**.tar
+**.zip
