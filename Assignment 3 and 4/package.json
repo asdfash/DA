@@ -12,5 +12,6 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.2",
     "nodemailer": "^6.9.15"
-  }
+  },
+  "bundleDependencies": true
 }
